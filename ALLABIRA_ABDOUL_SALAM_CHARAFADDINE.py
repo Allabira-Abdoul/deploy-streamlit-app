@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import pickle
 import time
-from sklearn.preprocessing import StandardScaler
 
 st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 
@@ -23,7 +22,7 @@ freq_maps = {
     'MaritalStatus': {'Married': 0.457, 'Single': 0.320, 'Divorced': 0.221}
 }
 
-st.title("📊 HR Employee Attrition Predictor")
+st.title("HR Employee Attrition Predictor")
 st.markdown("Predicting whether an employee will stay or leave using your **Random Forest** model.")
 
 with st.spinner('Loading model and configurations...'):
@@ -103,9 +102,9 @@ if st.button('Analyze Risk'):
 
     st.divider()
     if prediction == 1:
-        st.error(f"⚠️ **High Attrition Risk** (Probability: {prob[1]:.2%})")
+        st.error(f"**High Attrition Risk** (Probability: {prob[1]:.2%})")
         st.write("This employee is likely to leave the company.")
     else:
-        st.success(f"✅ **Low Attrition Risk** (Probability: {prob[1]:.2%})")
+        st.success(f"**Low Attrition Risk** (Probability: {prob[1]:.2%})")
         st.write("This employee is likely to stay.")
         st.balloons()
