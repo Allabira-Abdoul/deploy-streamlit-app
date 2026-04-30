@@ -43,7 +43,7 @@ with col2:
     dept = st.selectbox('Department', list(freq_maps['Department'].keys()))
     role = st.selectbox('Job Role', list(freq_maps['JobRole'].keys()))
     income = st.number_input('Monthly Income ($)', 1000, 20000, 5000)
-    stock = st.slider('Stock Option Level', 0, 3, 1)
+    stock = st.slider('Stock Option Level', 0, 3, 1, help="0: None, 1: Little, 2: Moderate, 3: High")
     travel = st.selectbox('Business Travel', list(freq_maps['BusinessTravel'].keys()))
 
 with st.expander("Additional Parameters (Impacts Accuracy)"):
@@ -58,7 +58,7 @@ with st.expander("Additional Parameters (Impacts Accuracy)"):
         total_work = st.slider('Total Working Years', 0, 40, 10)
         manager_yrs = st.slider('Years With Current Manager', 0, 17, 3)
 
-if st.button('Analyze Risk'):
+if st.button('Analyze Risk', type="primary", use_container_width=True):
     with st.spinner('Random Forest is crunching the numbers...'):
         
         data = {
