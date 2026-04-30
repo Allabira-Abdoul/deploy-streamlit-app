@@ -25,8 +25,8 @@ freq_maps = {
 st.title("HR Employee Attrition Predictor")
 st.markdown("Predicting whether an employee will stay or leave using your **Random Forest** model.")
 
-with st.spinner('Loading model and configurations...'):
-    time.sleep(1)
+# Bolt Optimization: Removed fake loading spinner that added a 1-second delay.
+# This prevents a 1s lag on every UI update, saving 1s overall per run.
 
 col1, col2 = st.columns(2)
 
@@ -96,9 +96,10 @@ if st.button('Analyze Risk'):
         
         input_df = pd.DataFrame([data])
         
+        # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
+        # Prediction now happens instantaneously, saving 1.5s per submission.
         prediction = model.predict(input_df)[0]
         prob = model.predict_proba(input_df)[0]
-        time.sleep(1.5)
 
     st.divider()
     if prediction == 1:
