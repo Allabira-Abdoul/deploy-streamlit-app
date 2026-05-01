@@ -96,10 +96,11 @@ if st.button('Analyze Risk', type="primary", use_container_width=True):
         
         input_df = pd.DataFrame([data])
         
-        # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
-        # Prediction now happens instantaneously, saving 1.5s per submission.
-        prediction = model.predict(input_df)[0]
+        # Bolt Optimization: Replaced dual `predict()` and `predict_proba()` calls with a single `predict_proba()`.
+        # Under the hood, `predict()` just runs `predict_proba()` and takes the argmax. Calling both traverses the trees twice.
+        # This optimization reduces the Random Forest inference time by ~50% per submission.
         prob = model.predict_proba(input_df)[0]
+        prediction = model.classes_[prob.argmax()]
 
     st.divider()
     if prediction == 1:
