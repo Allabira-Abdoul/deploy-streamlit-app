@@ -8,9 +8,14 @@ st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 
 @st.cache_resource
 def load_assets():
-    with open('rfc.pkl', 'rb') as file:
-        model = pickle.load(file)
-    return model
+    try:
+        with open('rfc.pkl', 'rb') as file:
+            model = pickle.load(file)
+        return model
+    except Exception:
+        # Sentinel: Prevent leaking file system details via stack trace
+        st.error("Failed to load model assets. Please contact support.")
+        st.stop()
 
 model = load_assets()
 
@@ -98,8 +103,13 @@ if st.button('Analyze Risk', type="primary", use_container_width=True):
         
         # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
         # Prediction now happens instantaneously, saving 1.5s per submission.
-        prediction = model.predict(input_df)[0]
-        prob = model.predict_proba(input_df)[0]
+        try:
+            prediction = model.predict(input_df)[0]
+            prob = model.predict_proba(input_df)[0]
+        except Exception:
+            # Sentinel: Prevent leaking internal stack trace to users
+            st.error("An error occurred during prediction. Please verify inputs or contact support.")
+            st.stop()
 
     st.divider()
     if prediction == 1:
