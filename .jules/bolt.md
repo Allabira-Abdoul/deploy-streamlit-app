@@ -1,0 +1,3 @@
+## 2025-02-20 - Optimizing Scikit-learn Single Row Predictions
+**Learning:** For scikit-learn models (like RandomForest) deployed in an interactive UI (like Streamlit), creating a `pd.DataFrame` for a single-row prediction introduces significant overhead compared to a plain list of lists or numpy array. Additionally, calling `predict()` followed by `predict_proba()` traverses the decision trees twice, doubling inference time.
+**Action:** Always convert single-row inference inputs to a 2D list `[list(data.values())]` and use `predict_proba()` to compute both the probabilities and the class via `model.classes_[np.argmax(prob)]` in a single pass.

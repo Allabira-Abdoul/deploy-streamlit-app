@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import time
+import warnings
 
 st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 
@@ -94,12 +95,17 @@ if st.button('Analyze Risk', type="primary", use_container_width=True):
             'YearsWithCurrManager': manager_yrs
         }
         
-        input_df = pd.DataFrame([data])
+        # Bolt Optimization: Avoid Pandas instantiation overhead and double inference.
+        # Single-row dict converted directly to list of lists.
+        input_arr = [list(data.values())]
         
         # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
-        # Prediction now happens instantaneously, saving 1.5s per submission.
-        prediction = model.predict(input_df)[0]
-        prob = model.predict_proba(input_df)[0]
+        # Call predict_proba ONCE instead of predict() and predict_proba() to save
+        # traversing the trees twice.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            prob = model.predict_proba(input_arr)[0]
+        prediction = model.classes_[np.argmax(prob)]
 
     st.divider()
     if prediction == 1:
