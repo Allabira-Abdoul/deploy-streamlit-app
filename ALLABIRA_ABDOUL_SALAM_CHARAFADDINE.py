@@ -35,14 +35,14 @@ with col1:
     age = st.slider('Age', 18, 60, 30)
     gender = st.selectbox('Gender', ['Male', 'Female'])
     marital = st.selectbox('Marital Status', list(freq_maps['MaritalStatus'].keys()))
-    distance = st.number_input('Distance From Home (km)', 1, 30, 5)
+    distance = st.number_input('Distance From Home (km)', 1, 30, 5, step=1)
     overtime = st.selectbox('Works Overtime?', ['Yes', 'No'])
 
 with col2:
     st.subheader("Professional Factors")
     dept = st.selectbox('Department', list(freq_maps['Department'].keys()))
     role = st.selectbox('Job Role', list(freq_maps['JobRole'].keys()))
-    income = st.number_input('Monthly Income ($)', 1000, 20000, 5000)
+    income = st.number_input('Monthly Income ($)', 1000, 20000, 5000, step=500)
     stock = st.slider('Stock Option Level', 0, 3, 1, help="0: None, 1: Little, 2: Moderate, 3: High")
     travel = st.selectbox('Business Travel', list(freq_maps['BusinessTravel'].keys()))
 
