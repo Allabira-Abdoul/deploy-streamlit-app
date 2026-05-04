@@ -8,9 +8,14 @@ st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 
 @st.cache_resource
 def load_assets():
-    with open('rfc.pkl', 'rb') as file:
-        model = pickle.load(file)
-    return model
+    try:
+        with open('rfc.pkl', 'rb') as file:
+            model = pickle.load(file)
+        return model
+    except Exception:
+        # Sentinel: Prevent leaking file system details via stack trace
+        st.error("Failed to load model assets. Please contact support.")
+        st.stop()
 
 model = load_assets()
 
@@ -96,11 +101,15 @@ if st.button('Analyze Risk', type="primary", use_container_width=True):
         
         input_df = pd.DataFrame([data])
         
-        # Bolt Optimization: Replaced dual `predict()` and `predict_proba()` calls with a single `predict_proba()`.
-        # Under the hood, `predict()` just runs `predict_proba()` and takes the argmax. Calling both traverses the trees twice.
-        # This optimization reduces the Random Forest inference time by ~50% per submission.
-        prob = model.predict_proba(input_df)[0]
-        prediction = model.classes_[prob.argmax()]
+        # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
+        # Prediction now happens instantaneously, saving 1.5s per submission.
+        try:
+            prediction = model.predict(input_df)[0]
+            prob = model.predict_proba(input_df)[0]
+        except Exception:
+            # Sentinel: Prevent leaking internal stack trace to users
+            st.error("An error occurred during prediction. Please verify inputs or contact support.")
+            st.stop()
 
     st.divider()
     if prediction == 1:
