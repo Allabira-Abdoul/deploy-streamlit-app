@@ -40,7 +40,7 @@ with col1:
     age = st.slider('Age', 18, 60, 30)
     gender = st.selectbox('Gender', ['Male', 'Female'])
     marital = st.selectbox('Marital Status', list(freq_maps['MaritalStatus'].keys()))
-    distance = st.number_input('Distance From Home (km)', 1, 30, 5)
+    distance = st.number_input('Distance From Home (km)', 1, 30, 5, step=1)
     overtime = st.selectbox('Works Overtime?', ['Yes', 'No'])
 
 with col2:
