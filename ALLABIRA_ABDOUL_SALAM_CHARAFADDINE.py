@@ -53,7 +53,7 @@ with main_left:
             role = st.selectbox('JOB ROLE', list(freq_maps['JobRole'].keys()), index=list(freq_maps['JobRole'].keys()).index('Sales Representative'))
             income = st.number_input('MONTHLY INCOME ($)', 1000, 20000, 2100, step=500)
             stock = st.slider('STOCK OPTION LEVEL', 0, 3, 0)
-            travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Frequently'))
+            travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
 
     with st.expander("Additional Parameters", icon=":material/tune:"):
         c1, c2 = st.columns(2)
@@ -128,6 +128,8 @@ with main_right:
             else:
                 st.success(f"**Low Attrition Risk**\n\nProbability: {prob[1]:.2%}", icon=":material/check_circle:")
                 st.write("This employee is likely to stay.")
+    else:
+        st.info("Adjust parameters and click **Analyze Risk** to generate a prediction.", icon=":material/info:")
 
     st.markdown("<br>", unsafe_allow_html=True)
     with st.container(border=True):

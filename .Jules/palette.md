@@ -7,3 +7,6 @@
 ## 2024-05-01 - Clarified Slider Meanings
 **Learning:** Users lack context when inputs like Environment Satisfaction and Work-Life Balance are given on a 1-4 scale. They may not know what each value signifies.
 **Action:** Always add `help` text on numerical sliders that map to semantic labels to clarify meaning for users.
+## 2026-05-04 - Streamlit Button State Reset
+**Learning:** Streamlit's interaction model causes button states (like 'analyze_clicked') to reset when any other input parameter is changed. This leads to the prediction results disappearing, leaving a confusing empty space and no feedback for the user.
+**Action:** Always provide a clear empty state (e.g., using `st.info`) for conditional blocks triggered by buttons, guiding users on the required action to populate the space.
