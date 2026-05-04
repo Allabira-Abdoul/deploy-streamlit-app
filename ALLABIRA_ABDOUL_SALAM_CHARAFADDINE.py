@@ -43,27 +43,45 @@ with main_left:
             age = st.slider('AGE', 18, 60, 28)
             gender = st.selectbox('GENDER', ['Female', 'Male'], index=1)
             marital = st.selectbox('MARITAL STATUS', list(freq_maps['MaritalStatus'].keys()), index=list(freq_maps['MaritalStatus'].keys()).index('Single'))
-            distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 30, 24, step=1)
-            overtime = st.toggle('OVERTIME', value=True)
+            distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 50, 24, step=1)
+            education = st.slider('EDUCATION LEVEL', 1, 5, 1)
+            edu_field = st.selectbox('EDUCATION FIELD', list(freq_maps['EducationField'].keys()), index=list(freq_maps['EducationField'].keys()).index('Life Sciences'))
+
+        with st.container(border=True):
+            st.markdown("### 💰 Compensation & Benefits")
+            income = st.number_input('MONTHLY INCOME ($)', 1000, 20000, 2100, step=500)
+            daily_rate = st.number_input('DAILY RATE', 100, 1500, 350, step=50)
+            hourly_rate = st.number_input('HOURLY RATE', 30, 100, 40, step=5)
+            monthly_rate = st.number_input('MONTHLY RATE', 2000, 30000, 5000, step=1000)
+            salary_hike = st.slider('PERCENT SALARY HIKE', 11, 25, 11)
+            stock = st.slider('STOCK OPTION LEVEL', 0, 3, 0)
+
+        with st.container(border=True):
+            st.markdown("### 😊 Satisfaction & Engagement")
+            env_sat = st.slider('ENVIRONMENT SATISFACTION', 1, 4, 1)
+            job_inv = st.slider('JOB INVOLVEMENT', 1, 4, 1)
+            job_sat = st.slider('JOB SATISFACTION', 1, 4, 1)
+            rel_sat = st.slider('RELATIONSHIP SATISFACTION', 1, 4, 1)
+            work_life = st.slider('WORK-LIFE BALANCE', 1, 4, 1)
+            perf_rating = st.slider('PERFORMANCE RATING', 3, 4, 3)
 
     with col2:
         with st.container(border=True):
             st.markdown("### 💼 Professional Factors")
             dept = st.selectbox('DEPARTMENT', list(freq_maps['Department'].keys()), index=list(freq_maps['Department'].keys()).index('Sales'))
             role = st.selectbox('JOB ROLE', list(freq_maps['JobRole'].keys()), index=list(freq_maps['JobRole'].keys()).index('Sales Representative'))
-            income = st.number_input('MONTHLY INCOME ($)', 1000, 20000, 2100, step=500)
-            stock = st.slider('STOCK OPTION LEVEL', 0, 3, 0)
+            job_level = st.slider('JOB LEVEL', 1, 5, 1)
             travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
+            overtime = st.toggle('OVERTIME', value=True)
+            training = st.slider('TRAINING TIMES LAST YEAR', 0, 6, 0)
 
-    with st.expander("Additional Parameters", icon=":material/tune:"):
-        c1, c2 = st.columns(2)
-        with c1:
-            env_sat = st.slider('ENVIRONMENT SATISFACTION', 1, 4, 1)
+        with st.container(border=True):
+            st.markdown("### 🕰️ Tenure & History")
             total_work = st.slider('TOTAL WORKING YEARS', 0, 40, 4)
-            years_at_co = st.slider('YEARS AT COMPANY', 0, 40, 1)
-        with c2:
-            work_life = st.slider('WORK-LIFE BALANCE', 1, 4, 1)
             num_cos = st.slider('NUM COMPANIES WORKED', 0, 9, 7)
+            years_at_co = st.slider('YEARS AT COMPANY', 0, 40, 1)
+            years_in_role = st.slider('YEARS IN CURRENT ROLE', 0, 18, 0)
+            years_since_prom = st.slider('YEARS SINCE LAST PROMOTION', 0, 15, 0)
             manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, 17, 0)
 
 with main_right:
@@ -75,33 +93,33 @@ with main_right:
             data = {
                 'Age': age,
                 'BusinessTravel': freq_maps['BusinessTravel'][travel],
-                'DailyRate': 350, # Default/Mean
+                'DailyRate': daily_rate,
                 'Department': freq_maps['Department'][dept],
                 'DistanceFromHome': distance,
-                'Education': 1,
-                'EducationField': freq_maps['EducationField']['Life Sciences'],
+                'Education': education,
+                'EducationField': freq_maps['EducationField'][edu_field],
                 'EnvironmentSatisfaction': env_sat,
                 'Gender': 1 if gender == 'Male' else 0,
-                'HourlyRate': 40,
-                'JobInvolvement': 1,
-                'JobLevel': 1,
+                'HourlyRate': hourly_rate,
+                'JobInvolvement': job_inv,
+                'JobLevel': job_level,
                 'JobRole': freq_maps['JobRole'][role],
-                'JobSatisfaction': 1,
+                'JobSatisfaction': job_sat,
                 'MaritalStatus': freq_maps['MaritalStatus'][marital],
                 'MonthlyIncome': income,
-                'MonthlyRate': 5000,
+                'MonthlyRate': monthly_rate,
                 'NumCompaniesWorked': num_cos,
                 'OverTime': 1 if overtime else 0,
-                'PercentSalaryHike': 11,
-                'PerformanceRating': 3,
-                'RelationshipSatisfaction': 1,
+                'PercentSalaryHike': salary_hike,
+                'PerformanceRating': perf_rating,
+                'RelationshipSatisfaction': rel_sat,
                 'StockOptionLevel': stock,
                 'TotalWorkingYears': total_work,
-                'TrainingTimesLastYear': 0,
+                'TrainingTimesLastYear': training,
                 'WorkLifeBalance': work_life,
                 'YearsAtCompany': years_at_co,
-                'YearsInCurrentRole': 0,
-                'YearsSinceLastPromotion': 0,
+                'YearsInCurrentRole': years_in_role,
+                'YearsSinceLastPromotion': years_since_prom,
                 'YearsWithCurrManager': manager_yrs
             }
 
