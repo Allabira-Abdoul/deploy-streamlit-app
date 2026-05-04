@@ -3,14 +3,19 @@ import pandas as pd
 import numpy as np
 import pickle
 import time
+import warnings
 
 st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 
 @st.cache_resource
 def load_assets():
-    with open('rfc.pkl', 'rb') as file:
-        model = pickle.load(file)
-    return model
+    try:
+        with open('rfc.pkl', 'rb') as file:
+            model = pickle.load(file)
+        return model
+    except Exception as e:
+        st.error("Failed to load model assets. Please check server configuration.")
+        st.stop()
 
 model = load_assets()
 
@@ -49,10 +54,10 @@ with col2:
 with st.expander("Additional Parameters (Impacts Accuracy)"):
     c1, c2, c3 = st.columns(3)
     with c1:
-        env_sat = st.slider('Environment Satisfaction (1-4)', 1, 4, 3)
+        env_sat = st.slider('Environment Satisfaction (1-4)', 1, 4, 3, help="1: Low, 2: Medium, 3: High, 4: Very High")
         num_cos = st.slider('Num Companies Worked', 0, 9, 1)
     with c2:
-        work_life = st.slider('Work-Life Balance (1-4)', 1, 4, 3)
+        work_life = st.slider('Work-Life Balance (1-4)', 1, 4, 3, help="1: Bad, 2: Good, 3: Better, 4: Best")
         years_at_co = st.slider('Years At Company', 0, 40, 5)
     with c3:
         total_work = st.slider('Total Working Years', 0, 40, 10)
@@ -94,12 +99,21 @@ if st.button('Analyze Risk', type="primary", use_container_width=True):
             'YearsWithCurrManager': manager_yrs
         }
         
-        input_df = pd.DataFrame([data])
+        # Bolt Optimization: Avoid Pandas instantiation overhead and double inference.
+        # Single-row dict converted directly to list of lists.
+        input_arr = [list(data.values())]
         
         # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
         # Prediction now happens instantaneously, saving 1.5s per submission.
-        prediction = model.predict(input_df)[0]
-        prob = model.predict_proba(input_df)[0]
+        try:
+          with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            prob = model.predict_proba(input_arr)[0]
+            prediction = model.classes_[np.argmax(prob)]
+        except Exception:
+            # Sentinel: Prevent leaking internal stack trace to users
+            st.error("An error occurred during prediction. Please verify inputs or contact support.")
+            st.stop()
 
     st.divider()
     if prediction == 1:
