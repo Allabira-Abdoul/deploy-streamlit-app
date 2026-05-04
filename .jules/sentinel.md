@@ -11,3 +11,12 @@
 **Vulnerability:** Information Disclosure
 **Learning:** Default unhandled exceptions in Streamlit applications often render the full Python stack trace directly in the UI for the user. This exposes application internals, potentially leaking file paths or database structure.
 **Prevention:** Always wrap critical data loading (`pickle.load`, file operations) and model inference (`model.predict`) sections in `try/except` blocks. Use `st.error()` to provide a sanitized, generic message to the user while employing `st.stop()` to halt further execution gracefully.
+## 2026-05-04 - [Streamlit Session State Limitations for Rate Limiting]
+**Vulnerability:** DoS mitigation using `st.session_state` is ineffective and acts as security theater.
+**Learning:** Streamlit creates a new, isolated `session_state` for every websocket connection (i.e., every new browser tab or programmatic connection). An attacker can easily open multiple connections to bypass per-session rate limits.
+**Prevention:** Do not use `st.session_state` for global rate limiting or DoS protection. Implement true global rate limiting at the proxy/web server layer.
+
+## 2026-05-04 - [Backend Input Validation for Streamlit Widgets]
+**Vulnerability:** Relying solely on frontend Streamlit widgets for input constraint validation.
+**Learning:** While Streamlit frontend widgets restrict user inputs under normal browser interactions, malicious actors can directly interact with the underlying WebSocket to send out-of-bounds or invalid payload data.
+**Prevention:** Always implement explicit server-side backend input validation (e.g., bounds checking and categorical validation) for data received from Streamlit widgets before processing it in the backend.

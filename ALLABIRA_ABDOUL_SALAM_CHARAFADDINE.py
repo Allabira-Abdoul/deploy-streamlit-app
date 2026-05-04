@@ -70,6 +70,14 @@ with main_right:
     analyze_clicked = st.button('Analyze Risk', type="primary", use_container_width=True, icon=":material/bar_chart:")
 
     if analyze_clicked:
+        # Sentinel: Backend input validation to prevent malicious websocket tampering
+        if not (18 <= age <= 60) or not (1 <= distance <= 30) or not (1000 <= income <= 20000) or not (0 <= stock <= 3):
+            st.error("Invalid input detected. Please ensure all values are within permitted ranges.", icon=":material/warning:")
+            st.stop()
+        if gender not in ['Female', 'Male'] or travel not in freq_maps['BusinessTravel']:
+            st.error("Invalid categorical input detected.", icon=":material/warning:")
+            st.stop()
+
         with st.spinner('Random Forest is crunching the numbers...'):
 
             data = {
