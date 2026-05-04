@@ -40,31 +40,31 @@ with main_left:
     with col1:
         with st.container(border=True):
             st.markdown("### 👤 Personal Details")
-            age = st.slider('AGE', 18, 60, 34)
-            gender = st.selectbox('GENDER', ['Female', 'Male'])
+            age = st.slider('AGE', 18, 60, 28)
+            gender = st.selectbox('GENDER', ['Female', 'Male'], index=1)
             marital = st.selectbox('MARITAL STATUS', list(freq_maps['MaritalStatus'].keys()), index=list(freq_maps['MaritalStatus'].keys()).index('Single'))
-            distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 30, 12, step=1)
-            overtime = st.toggle('OVERTIME', value=False)
+            distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 30, 24, step=1)
+            overtime = st.toggle('OVERTIME', value=True)
 
     with col2:
         with st.container(border=True):
             st.markdown("### 💼 Professional Factors")
-            dept = st.selectbox('DEPARTMENT', list(freq_maps['Department'].keys()), index=list(freq_maps['Department'].keys()).index('Research & Development'))
-            role = st.selectbox('JOB ROLE', list(freq_maps['JobRole'].keys()), index=list(freq_maps['JobRole'].keys()).index('Research Scientist'))
-            income = st.number_input('MONTHLY INCOME ($)', 1000, 20000, 5400, step=500)
-            stock = st.slider('STOCK OPTION LEVEL', 0, 3, 1)
-            travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Rarely'))
+            dept = st.selectbox('DEPARTMENT', list(freq_maps['Department'].keys()), index=list(freq_maps['Department'].keys()).index('Sales'))
+            role = st.selectbox('JOB ROLE', list(freq_maps['JobRole'].keys()), index=list(freq_maps['JobRole'].keys()).index('Sales Representative'))
+            income = st.number_input('MONTHLY INCOME ($)', 1000, 20000, 2100, step=500)
+            stock = st.slider('STOCK OPTION LEVEL', 0, 3, 0)
+            travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Frequently'))
 
     with st.expander("Additional Parameters", icon=":material/tune:"):
         c1, c2 = st.columns(2)
         with c1:
-            env_sat = st.slider('ENVIRONMENT SATISFACTION', 1, 4, 3)
-            total_work = st.slider('TOTAL WORKING YEARS', 0, 40, 10)
-            years_at_co = st.slider('YEARS AT COMPANY', 0, 40, 5)
+            env_sat = st.slider('ENVIRONMENT SATISFACTION', 1, 4, 1)
+            total_work = st.slider('TOTAL WORKING YEARS', 0, 40, 4)
+            years_at_co = st.slider('YEARS AT COMPANY', 0, 40, 1)
         with c2:
-            work_life = st.slider('WORK-LIFE BALANCE', 1, 4, 2)
-            num_cos = st.slider('NUM COMPANIES WORKED', 0, 9, 3)
-            manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, 17, 2)
+            work_life = st.slider('WORK-LIFE BALANCE', 1, 4, 1)
+            num_cos = st.slider('NUM COMPANIES WORKED', 0, 9, 7)
+            manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, 17, 0)
 
 with main_right:
     analyze_clicked = st.button('Analyze Risk', type="primary", use_container_width=True, icon=":material/bar_chart:")
@@ -75,33 +75,33 @@ with main_right:
             data = {
                 'Age': age,
                 'BusinessTravel': freq_maps['BusinessTravel'][travel],
-                'DailyRate': 800, # Default/Mean
+                'DailyRate': 350, # Default/Mean
                 'Department': freq_maps['Department'][dept],
                 'DistanceFromHome': distance,
-                'Education': 3,
+                'Education': 1,
                 'EducationField': freq_maps['EducationField']['Life Sciences'],
                 'EnvironmentSatisfaction': env_sat,
                 'Gender': 1 if gender == 'Male' else 0,
-                'HourlyRate': 65,
-                'JobInvolvement': 3,
-                'JobLevel': 2,
+                'HourlyRate': 40,
+                'JobInvolvement': 1,
+                'JobLevel': 1,
                 'JobRole': freq_maps['JobRole'][role],
-                'JobSatisfaction': 3,
+                'JobSatisfaction': 1,
                 'MaritalStatus': freq_maps['MaritalStatus'][marital],
                 'MonthlyIncome': income,
-                'MonthlyRate': 14000,
+                'MonthlyRate': 5000,
                 'NumCompaniesWorked': num_cos,
                 'OverTime': 1 if overtime else 0,
-                'PercentSalaryHike': 15,
+                'PercentSalaryHike': 11,
                 'PerformanceRating': 3,
-                'RelationshipSatisfaction': 3,
+                'RelationshipSatisfaction': 1,
                 'StockOptionLevel': stock,
                 'TotalWorkingYears': total_work,
-                'TrainingTimesLastYear': 2,
+                'TrainingTimesLastYear': 0,
                 'WorkLifeBalance': work_life,
                 'YearsAtCompany': years_at_co,
-                'YearsInCurrentRole': 2,
-                'YearsSinceLastPromotion': 1,
+                'YearsInCurrentRole': 0,
+                'YearsSinceLastPromotion': 0,
                 'YearsWithCurrManager': manager_yrs
             }
 
