@@ -1,15 +1,18 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
+import skops.io as sio
 import time
 
 st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 
 @st.cache_resource
 def load_assets():
-    with open('rfc.pkl', 'rb') as file:
-        model = pickle.load(file)
+    # 🛡️ Sentinel: Fixed CRITICAL insecure deserialization vulnerability
+    # Replaced pickle with skops to securely load the model without risk of arbitrary code execution
+    # The untrusted types for this file are empty ([]), therefore we can securely load the file
+    # by allowing default built-in types without dynamically passing get_untrusted_types.
+    model = sio.load('rfc.skops', trusted=[])
     return model
 
 model = load_assets()

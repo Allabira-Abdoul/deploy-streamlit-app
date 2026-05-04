@@ -4,3 +4,4 @@ matplotlib
 seaborn
 scikit-learn
 streamlit>=1.35.0
+skops
