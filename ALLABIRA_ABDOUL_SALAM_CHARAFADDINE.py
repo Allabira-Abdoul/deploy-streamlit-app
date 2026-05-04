@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
+import skops.io as sio
 import time
 import warnings
 
@@ -10,8 +10,7 @@ st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 @st.cache_resource
 def load_assets():
     try:
-        with open('rfc.pkl', 'rb') as file:
-            model = pickle.load(file)
+        model = sio.load('rfc.skops', trusted=[])
         return model
     except Exception as e:
         st.error("Failed to load model assets. Please check server configuration.")

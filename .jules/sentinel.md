@@ -1,3 +1,7 @@
+## 2024-05-04 - [Insecure Deserialization of ML Model]
+**Vulnerability:** CRITICAL: Loading an untrusted Random Forest model using `pickle.load()` (`rfc.pkl`).
+**Learning:** `pickle` is inherently insecure as it can execute arbitrary code upon deserialization. This makes the application vulnerable if the `.pkl` file is modified.
+**Prevention:** Always use secure persistence formats for machine learning models, such as `skops` for scikit-learn models. Replaced `pickle.load` with `skops.io.load` and checked for untrusted types dynamically.
 ## 2026-05-03 - [Streamlit Exception Handling]
 **Vulnerability:** Unhandled exceptions during file loading or model prediction could expose internal Python stack traces to the web UI.
 **Learning:** Streamlit apps without explicit top-level exception handling will dump stack traces to the browser, potentially leaking application internals or deployment paths.
