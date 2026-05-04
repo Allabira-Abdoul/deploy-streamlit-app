@@ -13,9 +13,8 @@ def load_assets():
         with open('rfc.pkl', 'rb') as file:
             model = pickle.load(file)
         return model
-    except Exception:
-        # Sentinel: Prevent leaking file system details via stack trace
-        st.error("Failed to load model assets. Please contact support.")
+    except Exception as e:
+        st.error("Failed to load model assets. Please check server configuration.")
         st.stop()
 
 model = load_assets()
