@@ -42,7 +42,7 @@ with main_left:
             age = st.slider('AGE', 18, 60, 28)
             gender = st.selectbox('GENDER', ['Female', 'Male'], index=1)
             marital = st.selectbox('MARITAL STATUS', list(freq_maps['MaritalStatus'].keys()), index=list(freq_maps['MaritalStatus'].keys()).index('Single'))
-            distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 50, 24, step=1)
+            distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 30, 24, step=1)
             education = st.slider('EDUCATION LEVEL', 1, 5, 1)
             edu_field = st.selectbox('EDUCATION FIELD', list(freq_maps['EducationField'].keys()), index=list(freq_maps['EducationField'].keys()).index('Life Sciences'))
 
@@ -84,7 +84,7 @@ with main_left:
             manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, 17, 0)
 
 with main_right:
-    analyze_clicked = st.button('Analyze Risk', type="primary", use_container_width=True, icon=":material/bar_chart:")
+    analyze_clicked = st.button('Analyze Risk', type="primary", use_container_width=True, icon=":material/bar_chart:", help="Calculate the employee's probability of leaving based on the provided profile")
 
     if analyze_clicked:
         # Sentinel: Backend input validation to prevent malicious websocket tampering
