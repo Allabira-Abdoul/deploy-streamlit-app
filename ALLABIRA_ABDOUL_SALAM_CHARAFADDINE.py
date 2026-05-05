@@ -89,10 +89,12 @@ with main_right:
 
     if analyze_clicked:
         # Sentinel: Backend input validation to prevent malicious websocket tampering
-        if not (18 <= age <= 60) or not (1 <= distance <= 30) or not (1000 <= income <= 20000) or not (0 <= stock <= 3):
+        if not (18 <= age <= 60) or not (1 <= distance <= 50) or not (1000 <= income <= 20000) or not (0 <= stock <= 3):
             st.error("Invalid input detected. Please ensure all values are within permitted ranges.", icon=":material/warning:")
             st.stop()
-        if gender not in ['Female', 'Male'] or travel not in freq_maps['BusinessTravel']:
+        if (gender not in ['Female', 'Male'] or travel not in freq_maps['BusinessTravel'] or
+            dept not in freq_maps['Department'] or role not in freq_maps['JobRole'] or
+            edu_field not in freq_maps['EducationField'] or marital not in freq_maps['MaritalStatus']):
             st.error("Invalid categorical input detected.", icon=":material/warning:")
             st.stop()
 
