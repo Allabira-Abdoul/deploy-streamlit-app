@@ -11,12 +11,13 @@ st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 def load_assets():
     try:
         model = sio.load('rfc.skops', trusted=[])
-        return model
+        scaler = sio.load('scaler.skops', trusted=[])
+        return model, scaler
     except Exception as e:
         st.error("Failed to load model assets. Please check server configuration.")
         st.stop()
 
-model = load_assets()
+model, scaler = load_assets()
 
 freq_maps = {
     'BusinessTravel': {'Travel_Rarely': 0.709, 'Travel_Frequently': 0.188, 'Non-Travel': 0.102},
@@ -131,16 +132,18 @@ with main_right:
                 'YearsWithCurrManager': manager_yrs
             }
 
-            # Bolt Optimization: Avoid Pandas instantiation overhead and double inference.
-            # Single-row dict converted directly to list of lists.
-            input_arr = [list(data.values())]
+            # Convert single-row dict directly to a DataFrame so feature names are passed to scaler correctly
+            input_df = pd.DataFrame([data])
+            # The scaler from retraining requires the features exactly as it was fit
+            input_df = input_df[scaler.feature_names_in_]
 
             # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
             # Prediction now happens instantaneously, saving 1.5s per submission.
             try:
               with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                prob = model.predict_proba(input_arr)[0]
+                scaled_arr = scaler.transform(input_df)
+                prob = model.predict_proba(scaled_arr)[0]
                 prediction = model.classes_[np.argmax(prob)]
             except Exception:
                 # Sentinel: Prevent leaking internal stack trace to users
