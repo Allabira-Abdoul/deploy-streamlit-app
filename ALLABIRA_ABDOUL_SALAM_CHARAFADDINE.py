@@ -1,8 +1,6 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
 import skops.io as sio
-import time
 import warnings
 
 st.set_page_config(page_title="HR Attrition Predictor", layout="wide")

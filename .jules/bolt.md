@@ -11,3 +11,6 @@
 ## 2024-05-24 - predict vs predict_proba + argmax/thresholding
 **Learning:** `model.predict_proba()` followed by thresholding/argmax in scikit-learn is significantly faster (~2x in some cases) than calling `model.predict()` and `model.predict_proba()` together. `model.predict()` just runs `predict_proba()` and takes the argmax under the hood anyway.
 **Action:** Replace `model.predict()` + `model.predict_proba()` calls with a single `model.predict_proba()` call and manual thresholding.
+## 2025-02-20 - Unnecessary Pandas Import in Streamlit
+**Learning:** Importing heavy libraries like `pandas` (which takes ~0.6s and ~86MB RAM) when they are completely unused adds significant startup overhead to Streamlit apps, which rerun top-to-bottom on every user interaction.
+**Action:** Always verify if heavy dependencies are actually used. If not, remove them to instantly improve load times and memory footprint without affecting functionality.
