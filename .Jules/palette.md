@@ -10,3 +10,6 @@
 ## 2026-05-04 - Streamlit Button State Reset
 **Learning:** Streamlit's interaction model causes button states (like 'analyze_clicked') to reset when any other input parameter is changed. This leads to the prediction results disappearing, leaving a confusing empty space and no feedback for the user.
 **Action:** Always provide a clear empty state (e.g., using `st.info`) for conditional blocks triggered by buttons, guiding users on the required action to populate the space.
+## 2026-05-04 - [Align UI Input Constraints with Backend Validation]
+**Learning:** If the UI widget (like `st.number_input`) allows values outside the strict backend validation bounds (e.g., UI `max_value=50` but backend `< 30`), users encounter abrupt error messages when interacting normally.
+**Action:** Always check the backend constraints (Sentinel) and ensure the frontend UI widget parameters (`min_value`, `max_value`) precisely match them to naturally prevent invalid inputs and provide a smoother user experience.
