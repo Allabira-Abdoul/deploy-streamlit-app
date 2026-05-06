@@ -87,14 +87,19 @@ with main_right:
     analyze_clicked = st.button('Analyze Risk', type="primary", use_container_width=True, icon=":material/bar_chart:", help="Calculate the employee's probability of leaving based on the provided profile")
 
     if analyze_clicked:
-        # Sentinel: Backend input validation to prevent malicious websocket tampering
-        if not (18 <= age <= 60) or not (1 <= distance <= 50) or not (1000 <= income <= 20000) or not (0 <= stock <= 3):
-            st.error("Invalid input detected. Please ensure all values are within permitted ranges.", icon=":material/warning:")
-            st.stop()
-        if (gender not in ['Female', 'Male'] or travel not in freq_maps['BusinessTravel'] or
-            dept not in freq_maps['Department'] or role not in freq_maps['JobRole'] or
-            edu_field not in freq_maps['EducationField'] or marital not in freq_maps['MaritalStatus']):
-            st.error("Invalid categorical input detected.", icon=":material/warning:")
+        try:
+            # Sentinel: Backend input validation to prevent malicious websocket tampering
+            if not (18 <= age <= 60) or not (1 <= distance <= 30) or not (1000 <= income <= 20000) or not (0 <= stock <= 3):
+                st.error("Invalid input detected. Please ensure all values are within permitted ranges.")
+                st.stop()
+            if (gender not in ['Female', 'Male'] or travel not in freq_maps['BusinessTravel'] or
+                dept not in freq_maps['Department'] or role not in freq_maps['JobRole'] or
+                edu_field not in freq_maps['EducationField'] or marital not in freq_maps['MaritalStatus']):
+                st.error("Invalid categorical input detected.")
+                st.stop()
+        except Exception:
+            # Sentinel: Catch unhashable types (like lists passed via websocket) crashing the `in` dict lookups
+            st.error("Malformed input payload detected. Please refresh the application.")
             st.stop()
 
         with st.spinner('Random Forest is crunching the numbers...'):
