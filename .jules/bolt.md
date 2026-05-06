@@ -14,3 +14,6 @@
 ## 2025-02-20 - Unnecessary Pandas Import in Streamlit
 **Learning:** Importing heavy libraries like `pandas` (which takes ~0.6s and ~86MB RAM) when they are completely unused adds significant startup overhead to Streamlit apps, which rerun top-to-bottom on every user interaction.
 **Action:** Always verify if heavy dependencies are actually used. If not, remove them to instantly improve load times and memory footprint without affecting functionality.
+## 2024-05-24 - Streamlit Initialization Overhead from Heavy Imports
+**Learning:** Streamlit's execution model reruns the entire script from top to bottom on every user interaction. Heavy imports like `pandas` (which takes ~0.5s to import) cause a significant and noticeable delay on every interaction even if they are minimally used (e.g., just for formatting a single prediction row).
+**Action:** Avoid heavy unused or minimally used dependencies like `pandas` in Streamlit apps. Use native Python data structures (like list comprehensions) where possible to reduce initialization overhead and improve app responsiveness.
