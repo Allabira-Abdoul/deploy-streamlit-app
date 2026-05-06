@@ -43,7 +43,7 @@ with main_left:
             gender = st.selectbox('GENDER', ['Female', 'Male'], index=1)
             marital = st.selectbox('MARITAL STATUS', list(freq_maps['MaritalStatus'].keys()), index=list(freq_maps['MaritalStatus'].keys()).index('Single'))
             distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 30, 24, step=1)
-            education = st.slider('EDUCATION LEVEL', 1, 5, 1)
+            education = st.slider('EDUCATION LEVEL', 1, 5, 1, help="1: Below College, 2: College, 3: Bachelor, 4: Master, 5: Doctor")
             edu_field = st.selectbox('EDUCATION FIELD', list(freq_maps['EducationField'].keys()), index=list(freq_maps['EducationField'].keys()).index('Life Sciences'))
 
         with st.container(border=True):
@@ -57,12 +57,12 @@ with main_left:
 
         with st.container(border=True):
             st.markdown("### 😊 Satisfaction & Engagement")
-            env_sat = st.slider('ENVIRONMENT SATISFACTION', 1, 4, 1)
-            job_inv = st.slider('JOB INVOLVEMENT', 1, 4, 1)
-            job_sat = st.slider('JOB SATISFACTION', 1, 4, 1)
-            rel_sat = st.slider('RELATIONSHIP SATISFACTION', 1, 4, 1)
-            work_life = st.slider('WORK-LIFE BALANCE', 1, 4, 1)
-            perf_rating = st.slider('PERFORMANCE RATING', 3, 4, 3)
+            env_sat = st.slider('ENVIRONMENT SATISFACTION', 1, 4, 1, help="1: Low, 2: Medium, 3: High, 4: Very High")
+            job_inv = st.slider('JOB INVOLVEMENT', 1, 4, 1, help="1: Low, 2: Medium, 3: High, 4: Very High")
+            job_sat = st.slider('JOB SATISFACTION', 1, 4, 1, help="1: Low, 2: Medium, 3: High, 4: Very High")
+            rel_sat = st.slider('RELATIONSHIP SATISFACTION', 1, 4, 1, help="1: Low, 2: Medium, 3: High, 4: Very High")
+            work_life = st.slider('WORK-LIFE BALANCE', 1, 4, 1, help="1: Bad, 2: Good, 3: Better, 4: Best")
+            perf_rating = st.slider('PERFORMANCE RATING', 3, 4, 3, help="3: Excellent, 4: Outstanding")
 
     with col2:
         with st.container(border=True):
