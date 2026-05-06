@@ -20,3 +20,7 @@
 **Vulnerability:** Relying solely on frontend Streamlit widgets for input constraint validation.
 **Learning:** While Streamlit frontend widgets restrict user inputs under normal browser interactions, malicious actors can directly interact with the underlying WebSocket to send out-of-bounds or invalid payload data.
 **Prevention:** Always implement explicit server-side backend input validation (e.g., bounds checking and categorical validation) for data received from Streamlit widgets before processing it in the backend.
+## 2024-05-06 - [Backend Validation Bypass Leading to Stack Trace Leak]
+**Vulnerability:** Input validation dict lookups crashing on unhashable types (like lists passed via websocket), bypassing UI restrictions and causing `TypeError` to leak stack traces.
+**Learning:** Malicious actors can send unexpected types via WebSocket. If backend input validation relies on dictionary keys without type checking or try/except wrapping, it crashes before rejecting the input, resulting in unhandled exceptions and leaked internal info.
+**Prevention:** Always wrap backend input validation logic in a `try...except Exception` block to catch type errors and return a generic secure error message. Also, ensure backend boundaries perfectly mirror frontend constraints to avoid abrupt errors on edge cases.
