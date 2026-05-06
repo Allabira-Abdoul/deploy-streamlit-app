@@ -13,3 +13,6 @@
 ## 2026-05-04 - [Align UI Input Constraints with Backend Validation]
 **Learning:** If the UI widget (like `st.number_input`) allows values outside the strict backend validation bounds (e.g., UI `max_value=50` but backend `< 30`), users encounter abrupt error messages when interacting normally.
 **Action:** Always check the backend constraints (Sentinel) and ensure the frontend UI widget parameters (`min_value`, `max_value`) precisely match them to naturally prevent invalid inputs and provide a smoother user experience.
+## 2024-05-24 - Streamlit Slider Ordinal Tooltips
+**Learning:** Streamlit sliders used for encoded ordinal data require explicit `help` text since Streamlit doesn't natively support custom text labels for slider ticks. Users can find 1-4 scales ambiguous without context.
+**Action:** Always add `help` tooltips to clarify the meaning of ordinal numeric values in Streamlit sliders to reduce cognitive load.
