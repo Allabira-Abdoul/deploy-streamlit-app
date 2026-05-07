@@ -17,3 +17,6 @@
 ## 2024-05-24 - Streamlit Initialization Overhead from Heavy Imports
 **Learning:** Streamlit's execution model reruns the entire script from top to bottom on every user interaction. Heavy imports like `pandas` (which takes ~0.5s to import) cause a significant and noticeable delay on every interaction even if they are minimally used (e.g., just for formatting a single prediction row).
 **Action:** Avoid heavy unused or minimally used dependencies like `pandas` in Streamlit apps. Use native Python data structures (like list comprehensions) where possible to reduce initialization overhead and improve app responsiveness.
+## 2025-02-24 - Streamlit Form Batching for Performance
+**Learning:** Streamlit reruns the entire script top-to-bottom on every single widget interaction (like dragging a slider or changing a selectbox). In an application with many inputs, this causes significant lag and high CPU usage due to continuous script execution.
+**Action:** Always wrap groups of input widgets and their final submission button inside an `st.form(...)` using `st.form_submit_button()`. This batches all user input state changes together, deferring the script rerun until the submit button is explicitly clicked, dramatically improving UI responsiveness.

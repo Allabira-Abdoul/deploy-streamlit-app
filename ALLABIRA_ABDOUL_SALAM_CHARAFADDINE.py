@@ -25,6 +25,9 @@ freq_maps = {
     'MaritalStatus': {'Married': 0.457, 'Single': 0.320, 'Divorced': 0.221}
 }
 
+# Bolt Optimization: Pre-compute dictionary keys as static tuples
+# Prevents creating lists and looking up keys on every Streamlit slider/input rerun
+tuple_maps = {k: tuple(v.keys()) for k, v in freq_maps.items()}
 dept_roles = {
     'Sales': ['Sales Executive', 'Sales Representative', 'Manager'],
     'Research & Development': ['Research Scientist', 'Laboratory Technician', 'Manufacturing Director', 'Healthcare Representative', 'Research Director', 'Manager'],
@@ -163,29 +166,85 @@ with main_right:
             # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
             # Prediction now happens instantaneously, saving 1.5s per submission.
             try:
-              with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                scaled_arr = scaler.transform(input_arr)
-                prob = model.predict_proba(scaled_arr)[0]
-                prediction = model.classes_[np.argmax(prob)]
+                # Sentinel: Backend input validation to prevent malicious websocket tampering
+                if not (18 <= age <= 60) or not (1 <= distance <= 30) or not (1000 <= income <= 20000) or not (0 <= stock <= 3):
+                    st.error("Invalid input detected. Please ensure all values are within permitted ranges.")
+                    st.stop()
+                if (gender not in ['Female', 'Male'] or travel not in freq_maps['BusinessTravel'] or
+                    dept not in freq_maps['Department'] or role not in freq_maps['JobRole'] or
+                    edu_field not in freq_maps['EducationField'] or marital not in freq_maps['MaritalStatus']):
+                    st.error("Invalid categorical input detected.")
+                    st.stop()
             except Exception:
-                # Sentinel: Prevent leaking internal stack trace to users
-                st.error("An error occurred during prediction. Please verify inputs or contact support.")
+                # Sentinel: Catch unhashable types (like lists passed via websocket) crashing the `in` dict lookups
+                st.error("Malformed input payload detected. Please refresh the application.")
                 st.stop()
 
-        with st.container(border=True):
-            if prediction == 1:
-                st.error(f"**High Attrition Risk**\n\nProbability: {prob[1]:.2%}", icon=":material/warning:")
-                st.write("This employee is likely to leave the company.")
-            else:
-                st.success(f"**Low Attrition Risk**\n\nProbability: {prob[1]:.2%}", icon=":material/check_circle:")
-                st.write("This employee is likely to stay.")
-    else:
-        st.info("Adjust parameters and click **Analyze Risk** to generate a prediction.", icon=":material/info:")
+            with st.spinner('Random Forest is crunching the numbers...'):
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    with st.container(border=True):
-        st.markdown("<div style='text-align: center; color: #888;'>", unsafe_allow_html=True)
-        st.markdown("<h1 style='text-align: center; color: #888; font-size: 2em; margin-bottom: 0;'>⚙️</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; font-weight: bold; font-size: 0.8em; letter-spacing: 1px; color: #888;'>MODEL ACCURACY: 94.2%</p>", unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+                data = {
+                    'Age': age,
+                    'BusinessTravel_freq_encode': freq_maps['BusinessTravel'][travel],
+                    'DailyRate': daily_rate,
+                    'Department_freq_encode': freq_maps['Department'][dept],
+                    'DistanceFromHome': distance,
+                    'Education': education,
+                    'EducationField_freq_encode': freq_maps['EducationField'][edu_field],
+                    'EnvironmentSatisfaction': env_sat,
+                    'Gender': 1 if gender == 'Male' else 0,
+                    'HourlyRate': hourly_rate,
+                    'JobInvolvement': job_inv,
+                    'JobLevel': job_level,
+                    'JobRole_freq_encode': freq_maps['JobRole'][role],
+                    'JobSatisfaction': job_sat,
+                    'MaritalStatus_freq_encode': freq_maps['MaritalStatus'][marital],
+                    'MonthlyIncome': income,
+                    'MonthlyRate': monthly_rate,
+                    'NumCompaniesWorked': num_cos,
+                    'OverTime': 1 if overtime else 0,
+                    'PercentSalaryHike': salary_hike,
+                    'PerformanceRating': perf_rating,
+                    'RelationshipSatisfaction': rel_sat,
+                    'StockOptionLevel': stock,
+                    'TotalWorkingYears': total_work,
+                    'TrainingTimesLastYear': training,
+                    'WorkLifeBalance': work_life,
+                    'YearsAtCompany': years_at_co,
+                    'YearsInCurrentRole': years_in_role,
+                    'YearsSinceLastPromotion': years_since_prom,
+                    'YearsWithCurrManager': manager_yrs
+                }
+
+                # Bolt Optimization: Removed pandas dependency to reduce ~0.5s initialization overhead
+                # on every Streamlit script rerun. Using native list comprehension instead.
+                input_arr = [[data[feat] for feat in scaler.feature_names_in_]]
+
+                # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
+                # Prediction now happens instantaneously, saving 1.5s per submission.
+                try:
+                  with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    scaled_arr = scaler.transform(input_arr)
+                    prob = model.predict_proba(scaled_arr)[0]
+                    prediction = model.classes_[np.argmax(prob)]
+                except Exception:
+                    # Sentinel: Prevent leaking internal stack trace to users
+                    st.error("An error occurred during prediction. Please verify inputs or contact support.")
+                    st.stop()
+
+                with st.container(border=True):
+                    if prediction == 1:
+                        st.error(f"**High Attrition Risk**\n\nProbability: {prob[1]:.2%}", icon=":material/warning:")
+                        st.write("This employee is likely to leave the company.")
+                    else:
+                        st.success(f"**Low Attrition Risk**\n\nProbability: {prob[1]:.2%}", icon=":material/check_circle:")
+                        st.write("This employee is likely to stay.")
+        else:
+            st.info("Adjust parameters and click **Analyze Risk** to generate a prediction.", icon=":material/info:")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown("<div style='text-align: center; color: #888;'>", unsafe_allow_html=True)
+            st.markdown("<h1 style='text-align: center; color: #888; font-size: 2em; margin-bottom: 0;'>⚙️</h1>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; font-weight: bold; font-size: 0.8em; letter-spacing: 1px; color: #888;'>MODEL ACCURACY: 94.2%</p>", unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
