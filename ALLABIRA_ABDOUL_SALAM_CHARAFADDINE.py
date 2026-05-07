@@ -59,7 +59,7 @@ with main_left:
             hourly_rate = st.number_input('HOURLY RATE', 30, 100, 40, step=5)
             monthly_rate = st.number_input('MONTHLY RATE', 2000, 30000, 5000, step=1000)
             salary_hike = st.slider('PERCENT SALARY HIKE', 11, 25, 11)
-            stock = st.slider('STOCK OPTION LEVEL', 0, 3, 0)
+            stock = st.slider('STOCK OPTION LEVEL', 0, 3, 0, help="0: None, 1: Low, 2: Medium, 3: High")
 
         with st.container(border=True):
             st.markdown("### 😊 Satisfaction & Engagement")
@@ -75,7 +75,7 @@ with main_left:
             st.markdown("### 💼 Professional Factors")
             dept = st.selectbox('DEPARTMENT', list(freq_maps['Department'].keys()), index=list(freq_maps['Department'].keys()).index('Sales'))
             role = st.selectbox('JOB ROLE', dept_roles[dept], index=0)
-            job_level = st.slider('JOB LEVEL', 1, 5, 1)
+            job_level = st.slider('JOB LEVEL', 1, 5, 1, help="1: Entry Level, 2: Junior/Associate, 3: Mid-Level, 4: Senior/Lead, 5: Executive/Director")
             travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
             overtime = st.toggle('OVERTIME', value=True)
             training = st.slider('TRAINING TIMES LAST YEAR', 0, 6, 0)
