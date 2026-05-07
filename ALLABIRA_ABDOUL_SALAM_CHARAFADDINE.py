@@ -74,24 +74,28 @@ with main_left:
             perf_rating = st.slider('PERFORMANCE RATING', 3, 4, 3, help="3: Excellent, 4: Outstanding")
 
     with col2:
-        with st.container(border=True):
-            st.markdown("### 💼 Professional Factors")
-            dept = st.selectbox('DEPARTMENT', list(freq_maps['Department'].keys()), index=list(freq_maps['Department'].keys()).index('Sales'))
-            role = st.selectbox('JOB ROLE', dept_roles[dept], index=0)
-            job_level = st.slider('JOB LEVEL', 1, 5, 1, help="1: Entry Level, 2: Junior/Associate, 3: Mid-Level, 4: Senior/Lead, 5: Executive/Director")
-            travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
-            overtime = st.toggle('OVERTIME', value=True)
-            training = st.slider('TRAINING TIMES LAST YEAR', 0, 6, 0)
+        try:
+            with st.container(border=True):
+                st.markdown("### 💼 Professional Factors")
+                dept = st.selectbox('DEPARTMENT', list(freq_maps['Department'].keys()), index=list(freq_maps['Department'].keys()).index('Sales'))
+                role = st.selectbox('JOB ROLE', dept_roles[dept], index=0)
+                job_level = st.slider('JOB LEVEL', 1, 5, 1, help="1: Entry Level, 2: Junior/Associate, 3: Mid-Level, 4: Senior/Lead, 5: Executive/Director")
+                travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
+                overtime = st.toggle('OVERTIME', value=True)
+                training = st.slider('TRAINING TIMES LAST YEAR', 0, 6, 0)
 
-        with st.container(border=True):
-            st.markdown("### 🕰️ Tenure & History")
-            max_total_work = max(0, age - 18)
-            total_work = st.slider('TOTAL WORKING YEARS', 0, max(0, max_total_work), min(4, max_total_work))
-            num_cos = st.slider('NUM COMPANIES WORKED', 0, 9 if total_work > 0 else 0, 7 if total_work > 0 else 0)
-            years_at_co = st.slider('YEARS AT COMPANY', 0, max(0, total_work), min(1, total_work))
-            years_in_role = st.slider('YEARS IN CURRENT ROLE', 0, max(0, years_at_co), 0)
-            years_since_prom = st.slider('YEARS SINCE LAST PROMOTION', 0, max(0, years_at_co), 0)
-            manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, max(0, years_at_co), 0)
+            with st.container(border=True):
+                st.markdown("### 🕰️ Tenure & History")
+                max_total_work = max(0, age - 18)
+                total_work = st.slider('TOTAL WORKING YEARS', 0, max(0, max_total_work), min(4, max_total_work))
+                num_cos = st.slider('NUM COMPANIES WORKED', 0, 9 if total_work > 0 else 0, 7 if total_work > 0 else 0)
+                years_at_co = st.slider('YEARS AT COMPANY', 0, max(0, total_work), min(1, total_work))
+                years_in_role = st.slider('YEARS IN CURRENT ROLE', 0, max(0, years_at_co), 0)
+                years_since_prom = st.slider('YEARS SINCE LAST PROMOTION', 0, max(0, years_at_co), 0)
+                manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, max(0, years_at_co), 0)
+        except Exception:
+            st.error("Invalid input state detected. Please refresh the page to try again.")
+            st.stop()
 
 with main_right:
     analyze_clicked = st.button('Analyze Risk', type="primary", use_container_width=True, icon=":material/bar_chart:", help="Calculate the employee's probability of leaving based on the provided profile")
@@ -107,21 +111,21 @@ with main_right:
                 edu_field not in freq_maps['EducationField'] or marital not in freq_maps['MaritalStatus']):
                 st.error("Invalid categorical input detected.")
                 st.stop()
+            if total_work > max(0, age - 18) or years_at_co > total_work:
+                st.error("Invalid input detected. Logical constraints violated (e.g., tenure exceeding age limits).", icon=":material/warning:")
+                st.stop()
+            if years_in_role > years_at_co or years_since_prom > years_at_co or manager_yrs > years_at_co:
+                st.error("Invalid input detected. Years in role/promotion/manager cannot exceed years at company.", icon=":material/warning:")
+                st.stop()
+            if role not in dept_roles[dept]:
+                st.error("Invalid input detected. Role does not match the selected department.", icon=":material/warning:")
+                st.stop()
+            if total_work == 0 and num_cos > 0:
+                st.error("Invalid input detected. Number of companies worked must be 0 if total working years is 0.", icon=":material/warning:")
+                st.stop()
         except Exception:
             # Sentinel: Catch unhashable types (like lists passed via websocket) crashing the `in` dict lookups
             st.error("Malformed input payload detected. Please refresh the application.")
-            st.stop()
-        if total_work > max(0, age - 18) or years_at_co > total_work:
-            st.error("Invalid input detected. Logical constraints violated (e.g., tenure exceeding age limits).", icon=":material/warning:")
-            st.stop()
-        if years_in_role > years_at_co or years_since_prom > years_at_co or manager_yrs > years_at_co:
-            st.error("Invalid input detected. Years in role/promotion/manager cannot exceed years at company.", icon=":material/warning:")
-            st.stop()
-        if role not in dept_roles[dept]:
-            st.error("Invalid input detected. Role does not match the selected department.", icon=":material/warning:")
-            st.stop()
-        if total_work == 0 and num_cos > 0:
-            st.error("Invalid input detected. Number of companies worked must be 0 if total working years is 0.", icon=":material/warning:")
             st.stop()
 
         with st.spinner('Random Forest is crunching the numbers...'):
@@ -166,85 +170,29 @@ with main_right:
             # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
             # Prediction now happens instantaneously, saving 1.5s per submission.
             try:
-                # Sentinel: Backend input validation to prevent malicious websocket tampering
-                if not (18 <= age <= 60) or not (1 <= distance <= 30) or not (1000 <= income <= 20000) or not (0 <= stock <= 3):
-                    st.error("Invalid input detected. Please ensure all values are within permitted ranges.")
-                    st.stop()
-                if (gender not in ['Female', 'Male'] or travel not in freq_maps['BusinessTravel'] or
-                    dept not in freq_maps['Department'] or role not in freq_maps['JobRole'] or
-                    edu_field not in freq_maps['EducationField'] or marital not in freq_maps['MaritalStatus']):
-                    st.error("Invalid categorical input detected.")
-                    st.stop()
-            except Exception:
-                # Sentinel: Catch unhashable types (like lists passed via websocket) crashing the `in` dict lookups
-                st.error("Malformed input payload detected. Please refresh the application.")
-                st.stop()
-
-            with st.spinner('Random Forest is crunching the numbers...'):
-
-                data = {
-                    'Age': age,
-                    'BusinessTravel_freq_encode': freq_maps['BusinessTravel'][travel],
-                    'DailyRate': daily_rate,
-                    'Department_freq_encode': freq_maps['Department'][dept],
-                    'DistanceFromHome': distance,
-                    'Education': education,
-                    'EducationField_freq_encode': freq_maps['EducationField'][edu_field],
-                    'EnvironmentSatisfaction': env_sat,
-                    'Gender': 1 if gender == 'Male' else 0,
-                    'HourlyRate': hourly_rate,
-                    'JobInvolvement': job_inv,
-                    'JobLevel': job_level,
-                    'JobRole_freq_encode': freq_maps['JobRole'][role],
-                    'JobSatisfaction': job_sat,
-                    'MaritalStatus_freq_encode': freq_maps['MaritalStatus'][marital],
-                    'MonthlyIncome': income,
-                    'MonthlyRate': monthly_rate,
-                    'NumCompaniesWorked': num_cos,
-                    'OverTime': 1 if overtime else 0,
-                    'PercentSalaryHike': salary_hike,
-                    'PerformanceRating': perf_rating,
-                    'RelationshipSatisfaction': rel_sat,
-                    'StockOptionLevel': stock,
-                    'TotalWorkingYears': total_work,
-                    'TrainingTimesLastYear': training,
-                    'WorkLifeBalance': work_life,
-                    'YearsAtCompany': years_at_co,
-                    'YearsInCurrentRole': years_in_role,
-                    'YearsSinceLastPromotion': years_since_prom,
-                    'YearsWithCurrManager': manager_yrs
-                }
-
-                # Bolt Optimization: Removed pandas dependency to reduce ~0.5s initialization overhead
-                # on every Streamlit script rerun. Using native list comprehension instead.
-                input_arr = [[data[feat] for feat in scaler.feature_names_in_]]
-
-                # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
-                # Prediction now happens instantaneously, saving 1.5s per submission.
-                try:
-                  with warnings.catch_warnings():
+                with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     scaled_arr = scaler.transform(input_arr)
                     prob = model.predict_proba(scaled_arr)[0]
                     prediction = model.classes_[np.argmax(prob)]
-                except Exception:
-                    # Sentinel: Prevent leaking internal stack trace to users
-                    st.error("An error occurred during prediction. Please verify inputs or contact support.")
-                    st.stop()
+            except Exception:
+                # Sentinel: Prevent leaking internal stack trace to users
+                st.error("An error occurred during prediction. Please verify inputs or contact support.")
+                st.stop()
 
-                with st.container(border=True):
-                    if prediction == 1:
-                        st.error(f"**High Attrition Risk**\n\nProbability: {prob[1]:.2%}", icon=":material/warning:")
-                        st.write("This employee is likely to leave the company.")
-                    else:
-                        st.success(f"**Low Attrition Risk**\n\nProbability: {prob[1]:.2%}", icon=":material/check_circle:")
-                        st.write("This employee is likely to stay.")
-        else:
-            st.info("Adjust parameters and click **Analyze Risk** to generate a prediction.", icon=":material/info:")
+            with st.container(border=True):
+                if prediction == 1:
+                    st.error(f"**High Attrition Risk**\n\nProbability: {prob[1]:.2%}", icon=":material/warning:")
+                    st.write("This employee is likely to leave the company.")
+                else:
+                    st.success(f"**Low Attrition Risk**\n\nProbability: {prob[1]:.2%}", icon=":material/check_circle:")
+                    st.write("This employee is likely to stay.")
+    else:
+        st.info("Adjust parameters and click **Analyze Risk** to generate a prediction.", icon=":material/info:")
 
-        st.markdown("<br>", unsafe_allow_html=True)
-        with st.container(border=True):
-            st.markdown("<div style='text-align: center; color: #888;'>", unsafe_allow_html=True)
-            st.markdown("<h1 style='text-align: center; color: #888; font-size: 2em; margin-bottom: 0;'>⚙️</h1>", unsafe_allow_html=True)
-            st.markdown("<p style='text-align: center; font-weight: bold; font-size: 0.8em; letter-spacing: 1px; color: #888;'>MODEL ACCURACY: 94.2%</p>", unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("<div style='text-align: center; color: #888;'>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center; color: #888; font-size: 2em; margin-bottom: 0;'>⚙️</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; font-weight: bold; font-size: 0.8em; letter-spacing: 1px; color: #888;'>MODEL ACCURACY: 94.2%</p>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
