@@ -106,6 +106,12 @@ with main_right:
             if not (18 <= age <= 60) or not (1 <= distance <= 30) or not (1000 <= income <= 20000) or not (0 <= stock <= 3):
                 st.error("Invalid input detected. Please ensure all values are within permitted ranges.")
                 st.stop()
+            if not (100 <= daily_rate <= 1500) or not (30 <= hourly_rate <= 100) or not (2000 <= monthly_rate <= 30000) or not (11 <= salary_hike <= 25):
+                st.error("Invalid input detected. Please ensure all rate/salary values are within permitted ranges.")
+                st.stop()
+            if not (1 <= education <= 5) or not (1 <= env_sat <= 4) or not (1 <= job_inv <= 4) or not (1 <= job_sat <= 4) or not (1 <= rel_sat <= 4) or not (1 <= work_life <= 4) or not (3 <= perf_rating <= 4) or not (1 <= job_level <= 5) or not (0 <= training <= 6):
+                st.error("Invalid input detected. Please ensure all metric/level values are within permitted ranges.")
+                st.stop()
             if (gender not in ['Female', 'Male'] or travel not in freq_maps['BusinessTravel'] or
                 dept not in freq_maps['Department'] or role not in freq_maps['JobRole'] or
                 edu_field not in freq_maps['EducationField'] or marital not in freq_maps['MaritalStatus']):
