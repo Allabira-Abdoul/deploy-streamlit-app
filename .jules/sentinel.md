@@ -24,3 +24,7 @@
 **Vulnerability:** Input validation dict lookups crashing on unhashable types (like lists passed via websocket), bypassing UI restrictions and causing `TypeError` to leak stack traces.
 **Learning:** Malicious actors can send unexpected types via WebSocket. If backend input validation relies on dictionary keys without type checking or try/except wrapping, it crashes before rejecting the input, resulting in unhandled exceptions and leaked internal info.
 **Prevention:** Always wrap backend input validation logic in a `try...except Exception` block to catch type errors and return a generic secure error message. Also, ensure backend boundaries perfectly mirror frontend constraints to avoid abrupt errors on edge cases.
+## 2025-02-28 - Comprehensive Streamlit Input Validation
+**Vulnerability:** Incomplete backend validation for Streamlit frontend widgets. Only a few fields were validated, leaving many numerical inputs (like daily_rate, hourly_rate, etc.) unprotected against WebSocket tampering.
+**Learning:** Frontend widget constraints (e.g., `st.slider(..., min_value=1, max_value=5)`) do not provide true security, as malicious actors can directly manipulate the underlying WebSocket payload to send out-of-bounds data.
+**Prevention:** Always implement comprehensive server-side bounds checking and categorical validation for ALL inputs received from Streamlit widgets before using them in backend processing (like ML predictions or database queries).
