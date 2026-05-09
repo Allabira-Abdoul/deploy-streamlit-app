@@ -87,12 +87,24 @@ with main_left:
             with st.container(border=True):
                 st.markdown("### 🕰️ Tenure & History")
                 max_total_work = max(0, age - 18)
-                total_work = st.slider('TOTAL WORKING YEARS', 0, max(0, max_total_work), min(4, max_total_work), disabled=max_total_work == 0, help="Requires Age > 18" if max_total_work == 0 else None)
-                num_cos = st.slider('NUM COMPANIES WORKED', 0, 9 if total_work > 0 else 0, 7 if total_work > 0 else 0, disabled=total_work == 0, help="Requires Total Working Years > 0" if total_work == 0 else None)
-                years_at_co = st.slider('YEARS AT COMPANY', 0, max(0, total_work), min(1, total_work), disabled=total_work == 0, help="Requires Total Working Years > 0" if total_work == 0 else None)
-                years_in_role = st.slider('YEARS IN CURRENT ROLE', 0, max(0, years_at_co), 0, disabled=years_at_co == 0, help="Requires Years at Company > 0" if years_at_co == 0 else None)
-                years_since_prom = st.slider('YEARS SINCE LAST PROMOTION', 0, max(0, years_at_co), 0, disabled=years_at_co == 0, help="Requires Years at Company > 0" if years_at_co == 0 else None)
-                manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, max(0, years_at_co), 0, disabled=years_at_co == 0, help="Requires Years at Company > 0" if years_at_co == 0 else None)
+
+                total_work_disabled = max_total_work == 0
+                total_work_help = "Cannot have working years if age is under 18." if total_work_disabled else None
+                total_work = st.slider('TOTAL WORKING YEARS', 0, max(0, max_total_work), min(4, max_total_work), disabled=total_work_disabled, help=total_work_help)
+
+                num_cos_disabled = total_work == 0
+                num_cos_help = "Cannot have worked at companies if total working years is 0." if num_cos_disabled else None
+                num_cos = st.slider('NUM COMPANIES WORKED', 0, 9 if not num_cos_disabled else 0, 7 if not num_cos_disabled else 0, disabled=num_cos_disabled, help=num_cos_help)
+
+                years_at_co_disabled = total_work == 0
+                years_at_co_help = "Cannot have years at company if total working years is 0." if years_at_co_disabled else None
+                years_at_co = st.slider('YEARS AT COMPANY', 0, max(0, total_work), min(1, total_work), disabled=years_at_co_disabled, help=years_at_co_help)
+
+                role_prom_mgr_disabled = years_at_co == 0
+                role_prom_mgr_help = "Requires at least 1 year at company." if role_prom_mgr_disabled else None
+                years_in_role = st.slider('YEARS IN CURRENT ROLE', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help)
+                years_since_prom = st.slider('YEARS SINCE LAST PROMOTION', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help)
+                manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help)
         except Exception:
             st.error("Invalid input state detected. Please refresh the page to try again.")
             st.stop()
