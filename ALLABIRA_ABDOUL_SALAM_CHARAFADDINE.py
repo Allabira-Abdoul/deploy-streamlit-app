@@ -115,7 +115,8 @@ with main_right:
     if analyze_clicked:
         try:
             # Sentinel: Backend input validation to prevent malicious websocket tampering
-            if not (18 <= age <= 60) or not (1 <= distance <= 30) or not (1000 <= income <= 20000) or not (0 <= stock <= 3):
+            max_total_work = max(0, age - 18)
+            if not (18 <= age <= 60) or not (1 <= distance <= 30) or not (1000 <= income <= 20000) or not (0 <= stock <= 3) or not (100 <= daily_rate <= 1500) or not (30 <= hourly_rate <= 100) or not (2000 <= monthly_rate <= 30000) or not (11 <= salary_hike <= 25) or not (1 <= education <= 5) or not (1 <= env_sat <= 4) or not (1 <= job_inv <= 4) or not (1 <= job_sat <= 4) or not (1 <= rel_sat <= 4) or not (1 <= work_life <= 4) or not (3 <= perf_rating <= 4) or not (1 <= job_level <= 5) or not (0 <= training <= 6) or not (0 <= total_work <= max(0, max_total_work)) or not (0 <= num_cos <= (9 if total_work > 0 else 0)) or not (0 <= years_at_co <= max(0, total_work)) or not (0 <= years_in_role <= max(0, years_at_co)) or not (0 <= years_since_prom <= max(0, years_at_co)) or not (0 <= manager_yrs <= max(0, years_at_co)):
                 st.error("Invalid input detected. Please ensure all values are within permitted ranges.")
                 st.stop()
             if not (100 <= daily_rate <= 1500) or not (30 <= hourly_rate <= 100) or not (2000 <= monthly_rate <= 30000) or not (11 <= salary_hike <= 25):
