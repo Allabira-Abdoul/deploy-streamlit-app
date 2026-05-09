@@ -50,10 +50,10 @@ with main_left:
             st.markdown("### 👤 Personal Details")
             age = st.slider('AGE', 18, 60, 28)
             gender = st.selectbox('GENDER', ['Female', 'Male'], index=1)
-            marital = st.selectbox('MARITAL STATUS', list(freq_maps['MaritalStatus'].keys()), index=list(freq_maps['MaritalStatus'].keys()).index('Single'))
+            marital = st.selectbox('MARITAL STATUS', tuple_maps['MaritalStatus'], index=tuple_maps['MaritalStatus'].index('Single'))
             distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 30, 24, step=1)
             education = st.slider('EDUCATION LEVEL', 1, 5, 1, help="1: Below College, 2: College, 3: Bachelor, 4: Master, 5: Doctor")
-            edu_field = st.selectbox('EDUCATION FIELD', list(freq_maps['EducationField'].keys()), index=list(freq_maps['EducationField'].keys()).index('Life Sciences'))
+            edu_field = st.selectbox('EDUCATION FIELD', tuple_maps['EducationField'], index=tuple_maps['EducationField'].index('Life Sciences'))
 
         with st.container(border=True):
             st.markdown("### 💰 Compensation & Benefits")
@@ -77,10 +77,10 @@ with main_left:
         try:
             with st.container(border=True):
                 st.markdown("### 💼 Professional Factors")
-                dept = st.selectbox('DEPARTMENT', list(freq_maps['Department'].keys()), index=list(freq_maps['Department'].keys()).index('Sales'))
+                dept = st.selectbox('DEPARTMENT', tuple_maps['Department'], index=tuple_maps['Department'].index('Sales'))
                 role = st.selectbox('JOB ROLE', dept_roles[dept], index=0)
                 job_level = st.slider('JOB LEVEL', 1, 5, 1, help="1: Entry Level, 2: Junior/Associate, 3: Mid-Level, 4: Senior/Lead, 5: Executive/Director")
-                travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
+                travel = st.selectbox('BUSINESS TRAVEL', tuple_maps['BusinessTravel'], index=tuple_maps['BusinessTravel'].index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
                 overtime = st.toggle('OVERTIME', value=True)
                 training = st.slider('TRAINING TIMES LAST YEAR', 0, 6, 0)
 
