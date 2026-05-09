@@ -19,3 +19,7 @@
 ## 2026-05-09 - [Dynamically Constrained Sliders Disabled State]
 **Learning:** In Streamlit applications, dynamically constrained sliders that drop to an operational range of zero should be set with `disabled=True` and paired with a `help` tooltip to clarify the constrained UI state and prevent user confusion.
 **Action:** Disabled the dependent tenure sliders (`num_cos`, `years_at_co`, etc.) when their maximum constraint dropped to 0, providing a tooltip explaining the dependency.
+
+## 2024-05-24 - Disabling Contextually Constrained Sliders
+**Learning:** In Streamlit, dynamically constrained sliders (where max_value changes based on another input, dropping to 0) can result in sliders that appear interactive but cannot be moved, leading to a confusing UX.
+**Action:** Add `disabled=condition` and a corresponding `help="Reason"` tooltip to Streamlit widgets when their constraints drop their operational range to zero, ensuring clear feedback and preventing user frustration.
