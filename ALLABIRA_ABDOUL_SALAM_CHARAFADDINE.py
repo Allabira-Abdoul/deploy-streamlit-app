@@ -50,10 +50,10 @@ with main_left:
             st.markdown("### 👤 Personal Details")
             age = st.slider('AGE', 18, 60, 28)
             gender = st.selectbox('GENDER', ['Female', 'Male'], index=1)
-            marital = st.selectbox('MARITAL STATUS', list(freq_maps['MaritalStatus'].keys()), index=list(freq_maps['MaritalStatus'].keys()).index('Single'))
+            marital = st.selectbox('MARITAL STATUS', tuple_maps['MaritalStatus'], index=tuple_maps['MaritalStatus'].index('Single'))
             distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 30, 24, step=1)
             education = st.slider('EDUCATION LEVEL', 1, 5, 1, help="1: Below College, 2: College, 3: Bachelor, 4: Master, 5: Doctor")
-            edu_field = st.selectbox('EDUCATION FIELD', list(freq_maps['EducationField'].keys()), index=list(freq_maps['EducationField'].keys()).index('Life Sciences'))
+            edu_field = st.selectbox('EDUCATION FIELD', tuple_maps['EducationField'], index=tuple_maps['EducationField'].index('Life Sciences'))
 
         with st.container(border=True):
             st.markdown("### 💰 Compensation & Benefits")
@@ -77,22 +77,34 @@ with main_left:
         try:
             with st.container(border=True):
                 st.markdown("### 💼 Professional Factors")
-                dept = st.selectbox('DEPARTMENT', list(freq_maps['Department'].keys()), index=list(freq_maps['Department'].keys()).index('Sales'))
+                dept = st.selectbox('DEPARTMENT', tuple_maps['Department'], index=tuple_maps['Department'].index('Sales'))
                 role = st.selectbox('JOB ROLE', dept_roles[dept], index=0)
                 job_level = st.slider('JOB LEVEL', 1, 5, 1, help="1: Entry Level, 2: Junior/Associate, 3: Mid-Level, 4: Senior/Lead, 5: Executive/Director")
-                travel = st.selectbox('BUSINESS TRAVEL', list(freq_maps['BusinessTravel'].keys()), index=list(freq_maps['BusinessTravel'].keys()).index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
+                travel = st.selectbox('BUSINESS TRAVEL', tuple_maps['BusinessTravel'], index=tuple_maps['BusinessTravel'].index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
                 overtime = st.toggle('OVERTIME', value=True)
                 training = st.slider('TRAINING TIMES LAST YEAR', 0, 6, 0)
 
             with st.container(border=True):
                 st.markdown("### 🕰️ Tenure & History")
                 max_total_work = max(0, age - 18)
-                total_work = st.slider('TOTAL WORKING YEARS', 0, max(0, max_total_work), min(4, max_total_work))
-                num_cos = st.slider('NUM COMPANIES WORKED', 0, 9 if total_work > 0 else 0, 7 if total_work > 0 else 0)
-                years_at_co = st.slider('YEARS AT COMPANY', 0, max(0, total_work), min(1, total_work))
-                years_in_role = st.slider('YEARS IN CURRENT ROLE', 0, max(0, years_at_co), 0)
-                years_since_prom = st.slider('YEARS SINCE LAST PROMOTION', 0, max(0, years_at_co), 0)
-                manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, max(0, years_at_co), 0)
+
+                total_work_disabled = max_total_work == 0
+                total_work_help = "Cannot have working years if age is under 18." if total_work_disabled else None
+                total_work = st.slider('TOTAL WORKING YEARS', 0, max(0, max_total_work), min(4, max_total_work), disabled=total_work_disabled, help=total_work_help)
+
+                num_cos_disabled = total_work == 0
+                num_cos_help = "Cannot have worked at companies if total working years is 0." if num_cos_disabled else None
+                num_cos = st.slider('NUM COMPANIES WORKED', 0, 9 if not num_cos_disabled else 0, 7 if not num_cos_disabled else 0, disabled=num_cos_disabled, help=num_cos_help)
+
+                years_at_co_disabled = total_work == 0
+                years_at_co_help = "Cannot have years at company if total working years is 0." if years_at_co_disabled else None
+                years_at_co = st.slider('YEARS AT COMPANY', 0, max(0, total_work), min(1, total_work), disabled=years_at_co_disabled, help=years_at_co_help)
+
+                role_prom_mgr_disabled = years_at_co == 0
+                role_prom_mgr_help = "Requires at least 1 year at company." if role_prom_mgr_disabled else None
+                years_in_role = st.slider('YEARS IN CURRENT ROLE', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help)
+                years_since_prom = st.slider('YEARS SINCE LAST PROMOTION', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help)
+                manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help)
         except Exception:
             st.error("Invalid input state detected. Please refresh the page to try again.")
             st.stop()
@@ -106,6 +118,12 @@ with main_right:
             max_total_work = max(0, age - 18)
             if not (18 <= age <= 60) or not (1 <= distance <= 30) or not (1000 <= income <= 20000) or not (0 <= stock <= 3) or not (100 <= daily_rate <= 1500) or not (30 <= hourly_rate <= 100) or not (2000 <= monthly_rate <= 30000) or not (11 <= salary_hike <= 25) or not (1 <= education <= 5) or not (1 <= env_sat <= 4) or not (1 <= job_inv <= 4) or not (1 <= job_sat <= 4) or not (1 <= rel_sat <= 4) or not (1 <= work_life <= 4) or not (3 <= perf_rating <= 4) or not (1 <= job_level <= 5) or not (0 <= training <= 6) or not (0 <= total_work <= max(0, max_total_work)) or not (0 <= num_cos <= (9 if total_work > 0 else 0)) or not (0 <= years_at_co <= max(0, total_work)) or not (0 <= years_in_role <= max(0, years_at_co)) or not (0 <= years_since_prom <= max(0, years_at_co)) or not (0 <= manager_yrs <= max(0, years_at_co)):
                 st.error("Invalid input detected. Please ensure all values are within permitted ranges.")
+                st.stop()
+            if not (100 <= daily_rate <= 1500) or not (30 <= hourly_rate <= 100) or not (2000 <= monthly_rate <= 30000) or not (11 <= salary_hike <= 25):
+                st.error("Invalid input detected. Please ensure all rate/salary values are within permitted ranges.")
+                st.stop()
+            if not (1 <= education <= 5) or not (1 <= env_sat <= 4) or not (1 <= job_inv <= 4) or not (1 <= job_sat <= 4) or not (1 <= rel_sat <= 4) or not (1 <= work_life <= 4) or not (3 <= perf_rating <= 4) or not (1 <= job_level <= 5) or not (0 <= training <= 6):
+                st.error("Invalid input detected. Please ensure all metric/level values are within permitted ranges.")
                 st.stop()
             if (gender not in ['Female', 'Male'] or travel not in freq_maps['BusinessTravel'] or
                 dept not in freq_maps['Department'] or role not in freq_maps['JobRole'] or

@@ -20,3 +20,6 @@
 ## 2025-02-24 - Streamlit Form Batching for Performance
 **Learning:** Streamlit reruns the entire script top-to-bottom on every single widget interaction (like dragging a slider or changing a selectbox). In an application with many inputs, this causes significant lag and high CPU usage due to continuous script execution.
 **Action:** Always wrap groups of input widgets and their final submission button inside an `st.form(...)` using `st.form_submit_button()`. This batches all user input state changes together, deferring the script rerun until the submit button is explicitly clicked, dramatically improving UI responsiveness.
+## 2025-05-09 - Avoid st.form with Dynamically Dependent Inputs
+**Learning:** While `st.form` is excellent for batching input changes and preventing full-script reruns, it breaks the UI behavior of dynamically dependent inputs (like a `st.slider` max value depending on another slider's value, or `st.selectbox` options depending on another selectbox). Since `st.form` prevents reruns until submission, dependent inputs won't update their constraints interactively.
+**Action:** Do not wrap inputs in `st.form` if their options or constraints depend on the current state of other inputs in the same form. Use pre-computed static structures (like tuples instead of list instantiations) for safer, non-breaking performance optimizations.

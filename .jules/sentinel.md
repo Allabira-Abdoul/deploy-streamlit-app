@@ -28,3 +28,7 @@
 **Vulnerability:** Not all numeric inputs from Streamlit frontend widgets had server-side bounds checking.
 **Learning:** Frontend UI components in Streamlit (like `st.slider` min/max) only restrict normal browser interaction. A malicious user can intercept and modify WebSocket messages to send out-of-bounds data to the server, which could crash the application or cause unexpected behavior when processing the data in ML models.
 **Prevention:** Always implement explicit, comprehensive backend bounds checking and validation logic for ALL input data received from Streamlit widgets as a defense-in-depth measure, regardless of frontend constraints.
+## 2025-02-28 - Comprehensive Streamlit Input Validation
+**Vulnerability:** Incomplete backend validation for Streamlit frontend widgets. Only a few fields were validated, leaving many numerical inputs (like daily_rate, hourly_rate, etc.) unprotected against WebSocket tampering.
+**Learning:** Frontend widget constraints (e.g., `st.slider(..., min_value=1, max_value=5)`) do not provide true security, as malicious actors can directly manipulate the underlying WebSocket payload to send out-of-bounds data.
+**Prevention:** Always implement comprehensive server-side bounds checking and categorical validation for ALL inputs received from Streamlit widgets before using them in backend processing (like ML predictions or database queries).
