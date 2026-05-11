@@ -1,12 +1,12 @@
 import streamlit as st
 import numpy as np
-import skops.io as sio
 import warnings
 
 st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 
 @st.cache_resource
 def load_assets():
+    import skops.io as sio
     try:
         model = sio.load('rfc.skops', trusted=[])
         scaler = sio.load('scaler.skops', trusted=[])
@@ -61,7 +61,7 @@ with main_left:
             daily_rate = st.number_input('DAILY RATE', 100, 1500, 350, step=50)
             hourly_rate = st.number_input('HOURLY RATE', 30, 100, 40, step=5)
             monthly_rate = st.number_input('MONTHLY RATE', 2000, 30000, 5000, step=1000)
-            salary_hike = st.slider('PERCENT SALARY HIKE', 11, 25, 11)
+            salary_hike = st.slider('PERCENT SALARY HIKE', 11, 25, 11, format="%d%%")
             stock = st.slider('STOCK OPTION LEVEL', 0, 3, 0, help="0: None, 1: Low, 2: Medium, 3: High")
 
         with st.container(border=True):

@@ -23,3 +23,6 @@
 ## 2024-05-24 - Disabling Contextually Constrained Sliders
 **Learning:** In Streamlit, dynamically constrained sliders (where max_value changes based on another input, dropping to 0) can result in sliders that appear interactive but cannot be moved, leading to a confusing UX.
 **Action:** Add `disabled=condition` and a corresponding `help="Reason"` tooltip to Streamlit widgets when their constraints drop their operational range to zero, ensuring clear feedback and preventing user frustration.
+## 2024-05-24 - Formatting Slider Values
+**Learning:** Streamlit's `st.slider` `format` parameter accepts arbitrary text strings combined with printf-style formatting (e.g., `format="%d%%"` or `format="%d km"`). This is highly useful for clarifying measurement units directly on the slider handle.
+**Action:** Use the `format` parameter on Streamlit sliders to display relevant units directly to the user to improve clarity and reduce ambiguity.
