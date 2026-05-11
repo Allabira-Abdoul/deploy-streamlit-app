@@ -114,15 +114,18 @@ with main_right:
 
     if analyze_clicked:
         try:
-            # Sentinel: Backend input type validation
-            if not all(isinstance(x, (int, float)) for x in [age, distance, income, stock, daily_rate, hourly_rate, monthly_rate, salary_hike, education, env_sat, job_inv, job_sat, rel_sat, work_life, perf_rating, job_level, training, total_work, num_cos, years_at_co, years_in_role, years_since_prom, manager_yrs]):
-                st.error("Invalid input type detected. Expected numbers.")
+            # Sentinel: Explicit type validation to prevent type-confusion via websocket
+            numeric_inputs = [age, distance, income, daily_rate, hourly_rate, monthly_rate, salary_hike, stock, education, env_sat, job_inv, job_sat, rel_sat, work_life, perf_rating, job_level, training, total_work, num_cos, years_at_co, years_in_role, years_since_prom, manager_yrs]
+            string_inputs = [gender, marital, edu_field, dept, role, travel]
+
+            if not all(isinstance(x, (int, float)) for x in numeric_inputs):
+                st.error("Invalid input types detected. Expected numerical values.")
                 st.stop()
-            if not all(isinstance(x, str) for x in [gender, travel, dept, role, edu_field, marital]):
-                st.error("Invalid categorical type detected. Expected text.")
+            if not all(isinstance(x, str) for x in string_inputs):
+                st.error("Invalid input types detected. Expected string values.")
                 st.stop()
             if not isinstance(overtime, bool):
-                st.error("Invalid boolean type detected for overtime.")
+                st.error("Invalid input type detected for overtime. Expected boolean.")
                 st.stop()
 
             # Sentinel: Backend input validation to prevent malicious websocket tampering

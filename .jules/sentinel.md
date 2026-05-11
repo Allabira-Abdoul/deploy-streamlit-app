@@ -32,6 +32,10 @@
 **Vulnerability:** Incomplete backend validation for Streamlit frontend widgets. Only a few fields were validated, leaving many numerical inputs (like daily_rate, hourly_rate, etc.) unprotected against WebSocket tampering.
 **Learning:** Frontend widget constraints (e.g., `st.slider(..., min_value=1, max_value=5)`) do not provide true security, as malicious actors can directly manipulate the underlying WebSocket payload to send out-of-bounds data.
 **Prevention:** Always implement comprehensive server-side bounds checking and categorical validation for ALL inputs received from Streamlit widgets before using them in backend processing (like ML predictions or database queries).
+## 2024-05-10 - [Backend Type Validation for Streamlit Widgets]
+**Vulnerability:** Missing explicit server-side type validation for Streamlit widgets.
+**Learning:** Even though backend validation and boundary checks were present for Streamlit widgets, malicious actors could still bypass logic by manipulating WebSocket messages to send completely different data types, leading to potential type-confusion attacks or unhandled exceptions that could leak internal stack traces.
+**Prevention:** Implement explicit type checking using `isinstance()` for all inputs received from the user on the backend (e.g. `isinstance(val, (int, float))` for numerical values and `isinstance(val, str)` for categorical features) before executing further bound-checking logic or machine learning operations.
 ## 2026-05-10 - Strict Input Type Validation for Streamlit Widgets
 **Vulnerability:** Type confusion and potential bypass of bounds/logical checking logic.
 **Learning:** While Streamlit UI elements theoretically restrict types, malicious users interacting via WebSocket can inject unintended data types (like nested arrays or dicts) which might pass numeric bounds checking or crash the backend validation layer unexpectedly before triggering a secure stop. Global `except Exception` handlers are a last resort, not primary validation.
