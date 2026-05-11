@@ -1,12 +1,12 @@
 import streamlit as st
 import numpy as np
-import skops.io as sio
 import warnings
 
 st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 
 @st.cache_resource
 def load_assets():
+    import skops.io as sio
     try:
         model = sio.load('rfc.skops', trusted=[])
         scaler = sio.load('scaler.skops', trusted=[])
