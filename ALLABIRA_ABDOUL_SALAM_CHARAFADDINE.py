@@ -4,6 +4,29 @@ import warnings
 
 st.set_page_config(page_title="HR Attrition Predictor", layout="wide")
 
+st.markdown("""
+<style>
+    /* Styling to beautify the interface */
+    h1 {
+        color: #1f77b4;
+    }
+    .stButton>button {
+        border-radius: 20px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    /* Add a subtle background to containers for better separation */
+    [data-testid="stContainer"] {
+        border-radius: 10px;
+        background-color: rgba(240, 242, 246, 0.1);
+    }
+</style>
+""", unsafe_allow_html=True)
+
 @st.cache_resource
 def load_assets():
     import skops.io as sio
