@@ -26,3 +26,6 @@
 ## 2024-05-24 - Formatting Slider Values
 **Learning:** Streamlit's `st.slider` `format` parameter accepts arbitrary text strings combined with printf-style formatting (e.g., `format="%d%%"` or `format="%d km"`). This is highly useful for clarifying measurement units directly on the slider handle.
 **Action:** Use the `format` parameter on Streamlit sliders to display relevant units directly to the user to improve clarity and reduce ambiguity.
+## $(date +%Y-%m-%d) - Streamlit Number Input Formatting
+**Learning:** In Streamlit, `st.slider`'s `format` parameter accepts arbitrary text suffixes (e.g., `format="%d years"`), making it excellent for inline units. However, `st.number_input`'s `format` parameter strictly requires Python printf-style types (`%d`, `%f`) and throws errors for text prefixes/suffixes.
+**Action:** When adding units to Streamlit numeric widgets, use the `format` parameter for `st.slider`, but append the unit directly to the label string (e.g., `'MONTHLY RATE ($)'`) for `st.number_input`.

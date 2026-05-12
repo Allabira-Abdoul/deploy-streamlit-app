@@ -71,7 +71,7 @@ with main_left:
     with col1:
         with st.container(border=True):
             st.markdown("### 👤 Personal Details")
-            age = st.slider('AGE', 18, 60, 28)
+            age = st.slider('AGE', 18, 60, 28, format="%d years")
             gender = st.selectbox('GENDER', ['Female', 'Male'], index=1)
             marital = st.selectbox('MARITAL STATUS', tuple_maps['MaritalStatus'], index=tuple_maps['MaritalStatus'].index('Single'))
             distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 30, 24, step=1)
@@ -81,9 +81,9 @@ with main_left:
         with st.container(border=True):
             st.markdown("### 💰 Compensation & Benefits")
             income = st.number_input('MONTHLY INCOME ($)', 1000, 20000, 2100, step=500)
-            daily_rate = st.number_input('DAILY RATE', 100, 1500, 350, step=50)
-            hourly_rate = st.number_input('HOURLY RATE', 30, 100, 40, step=5)
-            monthly_rate = st.number_input('MONTHLY RATE', 2000, 30000, 5000, step=1000)
+            daily_rate = st.number_input('DAILY RATE ($)', 100, 1500, 350, step=50)
+            hourly_rate = st.number_input('HOURLY RATE ($)', 30, 100, 40, step=5)
+            monthly_rate = st.number_input('MONTHLY RATE ($)', 2000, 30000, 5000, step=1000)
             salary_hike = st.slider('PERCENT SALARY HIKE', 11, 25, 11, format="%d%%")
             stock = st.slider('STOCK OPTION LEVEL', 0, 3, 0, help="0: None, 1: Low, 2: Medium, 3: High")
 
@@ -105,7 +105,7 @@ with main_left:
                 job_level = st.slider('JOB LEVEL', 1, 5, 1, help="1: Entry Level, 2: Junior/Associate, 3: Mid-Level, 4: Senior/Lead, 5: Executive/Director")
                 travel = st.selectbox('BUSINESS TRAVEL', tuple_maps['BusinessTravel'], index=tuple_maps['BusinessTravel'].index('Travel_Frequently'), format_func=lambda x: x.replace('_', ' '))
                 overtime = st.toggle('OVERTIME', value=True)
-                training = st.slider('TRAINING TIMES LAST YEAR', 0, 6, 0)
+                training = st.slider('TRAINING TIMES LAST YEAR', 0, 6, 0, format="%d times")
 
             with st.container(border=True):
                 st.markdown("### 🕰️ Tenure & History")
@@ -113,21 +113,21 @@ with main_left:
 
                 total_work_disabled = max_total_work == 0
                 total_work_help = "Cannot have working years if age is under 18." if total_work_disabled else None
-                total_work = st.slider('TOTAL WORKING YEARS', 0, max(0, max_total_work), min(4, max_total_work), disabled=total_work_disabled, help=total_work_help)
+                total_work = st.slider('TOTAL WORKING YEARS', 0, max(0, max_total_work), min(4, max_total_work), disabled=total_work_disabled, help=total_work_help, format="%d years")
 
                 num_cos_disabled = total_work == 0
                 num_cos_help = "Cannot have worked at companies if total working years is 0." if num_cos_disabled else None
-                num_cos = st.slider('NUM COMPANIES WORKED', 0, 9 if not num_cos_disabled else 0, 7 if not num_cos_disabled else 0, disabled=num_cos_disabled, help=num_cos_help)
+                num_cos = st.slider('NUM COMPANIES WORKED', 0, 9 if not num_cos_disabled else 0, 7 if not num_cos_disabled else 0, disabled=num_cos_disabled, help=num_cos_help, format="%d companies")
 
                 years_at_co_disabled = total_work == 0
                 years_at_co_help = "Cannot have years at company if total working years is 0." if years_at_co_disabled else None
-                years_at_co = st.slider('YEARS AT COMPANY', 0, max(0, total_work), min(1, total_work), disabled=years_at_co_disabled, help=years_at_co_help)
+                years_at_co = st.slider('YEARS AT COMPANY', 0, max(0, total_work), min(1, total_work), disabled=years_at_co_disabled, help=years_at_co_help, format="%d years")
 
                 role_prom_mgr_disabled = years_at_co == 0
                 role_prom_mgr_help = "Requires at least 1 year at company." if role_prom_mgr_disabled else None
-                years_in_role = st.slider('YEARS IN CURRENT ROLE', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help)
-                years_since_prom = st.slider('YEARS SINCE LAST PROMOTION', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help)
-                manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help)
+                years_in_role = st.slider('YEARS IN CURRENT ROLE', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help, format="%d years")
+                years_since_prom = st.slider('YEARS SINCE LAST PROMOTION', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help, format="%d years")
+                manager_yrs = st.slider('YEARS WITH CURRENT MANAGER', 0, max(0, years_at_co), 0, disabled=role_prom_mgr_disabled, help=role_prom_mgr_help, format="%d years")
         except Exception:
             st.error("Invalid input state detected. Please refresh the page to try again.")
             st.stop()
