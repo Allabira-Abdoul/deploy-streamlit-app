@@ -219,13 +219,13 @@ with main_right:
                 'YearsWithCurrManager': manager_yrs
             }
 
-            # Bolt Optimization: Removed pandas dependency to reduce ~0.5s initialization overhead
-            # on every Streamlit script rerun. Using native list comprehension instead.
-            input_arr = [[data[feat] for feat in scaler.feature_names_in_]]
-
             # Bolt Optimization: Removed fake loading delay (time.sleep(1.5))
             # Prediction now happens instantaneously, saving 1.5s per submission.
             try:
+                # Bolt Optimization: Removed pandas dependency to reduce ~0.5s initialization overhead
+                # on every Streamlit script rerun. Using native list comprehension instead.
+                input_arr = [[data[feat] for feat in scaler.feature_names_in_]]
+
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     scaled_arr = scaler.transform(input_arr)
