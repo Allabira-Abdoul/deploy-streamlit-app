@@ -141,13 +141,16 @@ with main_right:
             numeric_inputs = [age, distance, income, daily_rate, hourly_rate, monthly_rate, salary_hike, stock, education, env_sat, job_inv, job_sat, rel_sat, work_life, perf_rating, job_level, training, total_work, num_cos, years_at_co, years_in_role, years_since_prom, manager_yrs]
             string_inputs = [gender, marital, edu_field, dept, role, travel]
 
-            if not all(isinstance(x, (int, float)) for x in numeric_inputs):
+            if not all(type(x) in (int, float) for x in numeric_inputs):
                 st.error("Invalid input types detected. Expected numerical values.")
                 st.stop()
-            if not all(isinstance(x, str) for x in string_inputs):
+            if not all(type(x) is str for x in string_inputs):
                 st.error("Invalid input types detected. Expected string values.")
                 st.stop()
-            if not isinstance(overtime, bool):
+            if any(len(x) > 100 for x in string_inputs):
+                st.error("Invalid input detected. String length exceeds permitted limits.")
+                st.stop()
+            if type(overtime) is not bool:
                 st.error("Invalid input type detected for overtime. Expected boolean.")
                 st.stop()
 

@@ -40,3 +40,7 @@
 **Vulnerability:** Type confusion and potential bypass of bounds/logical checking logic.
 **Learning:** While Streamlit UI elements theoretically restrict types, malicious users interacting via WebSocket can inject unintended data types (like nested arrays or dicts) which might pass numeric bounds checking or crash the backend validation layer unexpectedly before triggering a secure stop. Global `except Exception` handlers are a last resort, not primary validation.
 **Prevention:** In addition to bounds and categorical validation, implement strict, explicit type checking (e.g., `isinstance(val, (int, float))`) at the beginning of the backend processing logic to ensure inputs received from widgets match the expected data structure.
+## 2026-05-17 - [Strict Type Checking & Input Length Validation for Streamlit]
+**Vulnerability:** Type confusion via boolean inputs passing `isinstance(x, (int, float))` and potential DoS via unbounded string inputs over WebSockets.
+**Learning:** `bool` is a subclass of `int` in Python, so boolean values maliciously injected via WebSockets will pass `isinstance(x, int)` validation checks. Furthermore, Streamlit string inputs are inherently unbounded, creating a Denial of Service (DoS) risk if an attacker sends massive string payloads.
+**Prevention:** Use explicit `type(x) in (int, float)` and `type(x) is str` instead of `isinstance` for backend input validation in Streamlit apps. Additionally, enforce explicit maximum length limits on all string payloads.
