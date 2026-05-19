@@ -71,8 +71,8 @@ with main_left:
         with st.container(border=True):
             st.markdown("### 👤 Personal Details")
             age = st.slider('AGE', 18, 60, 28, format="%d years")
-            gender = st.selectbox('GENDER', ['Female', 'Male'], index=1)
-            marital = st.selectbox('MARITAL STATUS', tuple_maps['MaritalStatus'], index=tuple_maps['MaritalStatus'].index('Single'))
+            gender = st.radio('GENDER', ['Female', 'Male'], index=1, horizontal=True)
+            marital = st.radio('MARITAL STATUS', tuple_maps['MaritalStatus'], index=tuple_maps['MaritalStatus'].index('Single'), horizontal=True)
             distance = st.number_input('DISTANCE FROM HOME (KM)', 1, 30, 24, step=1)
             education = st.slider('EDUCATION LEVEL', 1, 5, 1, help="1: Below College, 2: College, 3: Bachelor, 4: Master, 5: Doctor")
             edu_field = st.selectbox('EDUCATION FIELD', tuple_maps['EducationField'], index=tuple_maps['EducationField'].index('Life Sciences'))

@@ -29,3 +29,6 @@
 ## $(date +%Y-%m-%d) - Streamlit Number Input Formatting
 **Learning:** In Streamlit, `st.slider`'s `format` parameter accepts arbitrary text suffixes (e.g., `format="%d years"`), making it excellent for inline units. However, `st.number_input`'s `format` parameter strictly requires Python printf-style types (`%d`, `%f`) and throws errors for text prefixes/suffixes.
 **Action:** When adding units to Streamlit numeric widgets, use the `format` parameter for `st.slider`, but append the unit directly to the label string (e.g., `'MONTHLY RATE ($)'`) for `st.number_input`.
+## 2026-05-19 - [Radio Buttons over Selectboxes for Small Categorical Inputs]
+**Learning:** For categorical inputs with only 2-3 options (like Gender or Marital Status), `st.selectbox` hides the options behind a click, increasing interaction cost.
+**Action:** Use `st.radio` with `horizontal=True` instead of `st.selectbox` for short categorical lists to immediately expose all options, reducing cognitive load and saving clicks.
